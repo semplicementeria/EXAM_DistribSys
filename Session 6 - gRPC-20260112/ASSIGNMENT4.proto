@@ -18,3 +18,15 @@ message GenerateResponse {
 service DistributionService {
     rpc GenerateResponseTime(GenerateRequest) returns (GenerateResponse);
 }
+
+// TEST
+
+//three distribution test:
+// deterministic: python ASSIGNMENT4_CLIENT_done.py -d d -p 2.0 -s localhost -v
+// uniform: python3 ASSIGNMENT4_CLIENT_done.py -d u -p 5.0 -s localhost -v
+// exponential: python3 ASSIGNMENT4_CLIENT_done.py -d e -p 0.5 -s localhost -v
+
+//multithreading:
+//python3 SSIGNMENT4_CLIENT_done.py -d d -p 3.0 -s localhost -t 5 -v
+
+// to see also if the system is robust to errors I could try to put a bad port or a -p very little like 0.00001
