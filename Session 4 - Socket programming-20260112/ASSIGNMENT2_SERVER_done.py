@@ -11,7 +11,7 @@ connection_times = []      # time elapsed between connection setups
 data_times = []            # time elapsed between data receptions
 lock = threading.Lock()    # to protect shared lists in threaded mode
 
-#definizione della funzione per il server iterativo (che lo user dovrà selezionare da input)
+# defintion of the function for the iterative server (the user will select it by input)
 def TCPserverIterative(Server_address, Server_port, verbose=False):
 
     serverSocket = socket(AF_INET, SOCK_STREAM)
@@ -27,7 +27,7 @@ def TCPserverIterative(Server_address, Server_port, verbose=False):
         while True: 
             #we accept the new connection to the client 
             connectionSocket, addr = serverSocket.accept()
-            print("[+] New connection from " + addr[0] + ":" + str(addr[1])) #addr[0] corrisponde a server address mentre addr[1] corrisponde alla porta trasformato tutto in stringa
+            print("[+] New connection from " + addr[0] + ":" + str(addr[1])) #addr[0] corresponds to server address mentre addr[1] corresponds to the port transformed in a string 
 
             # Measure time between connections
             now = time.time() * 1000  # in milliseconds
@@ -81,7 +81,7 @@ def TCPserverIterative(Server_address, Server_port, verbose=False):
 # Handler per il client nella concurrency
 def HandleClient(conn, Client_address, Client_port, verbose=False):
 
-    #server dedicato come print e vari ID dei thread a cui ci riferiamo (quello padre e quelli secondari praticamente)
+    #dedicated server as a print and various IDs of threads to which we refer (the primary and the secondary)
     print("[+] New server socket worker spawned for client " + Client_address + ":" + str(Client_port)) 
     print("Thread ID: " + str(get_native_id()) + " - PID: " + str(getpid()) + " - PPID: " + str(getppid()))
 
