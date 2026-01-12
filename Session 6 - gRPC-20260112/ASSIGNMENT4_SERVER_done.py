@@ -2,10 +2,10 @@ import grpc
 from concurrent import futures
 import time
 import random
-import Assignment_4_pb2
-import Assignment_4_pb2_grpc
+import ASSIGNMENT4_pb2
+import ASSIGNMENT4_pb2_grpc
 
-class DistributionServiceServicer(Assignment_4_pb2_grpc.DistributionServiceServicer):
+class DistributionServiceServicer(ASSIGNMENT4_pb2_grpc.DistributionServiceServicer):
     
     def _run_cpu_task(self, interval):
         """
@@ -38,14 +38,14 @@ class DistributionServiceServicer(Assignment_4_pb2_grpc.DistributionServiceServi
         else:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             context.set_details('Invalid distribution type')
-            return Assignment_4_pb2.GenerateResponse()
+            return ASSIGNMENT4_pb2.GenerateResponse()
 
         print(f"Server: Received {distr} request. Emulating {interval:.4f}s of CPU work...")
         
         # Perform the emulated work
         actual_work_done = self._run_cpu_task(interval)
         
-        return Assignment_4_pb2.GenerateResponse(
+        return ASSIGNMENT4_pb2.GenerateResponse(
             generated_time=actual_work_done,
             message=f"Successfully simulated {distr} workload."
         )
@@ -53,7 +53,7 @@ class DistributionServiceServicer(Assignment_4_pb2_grpc.DistributionServiceServi
 def serve():
     # We use a ThreadPool to allow concurrent CPU task execution
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    Assignment_4_pb2_grpc.add_DistributionServiceServicer_to_server(
+    ASSIGNMENT4_pb2_grpc.add_DistributionServiceServicer_to_server(
         DistributionServiceServicer(), server
     )
     
