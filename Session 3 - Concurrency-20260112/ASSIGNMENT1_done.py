@@ -5,10 +5,15 @@ import time
 import argparse
 import os
 
-# Function to generate intervals based on the chosen distr. function. We wait for the generated time and write the timestamp on a file
+#I've added the lock to ensure that only one worker writes the file at a time in order to prevent race  conditions.
+
+file_lock = multiprocessing.Lock()
+thread_lock = threading.Lock()
+
+# Function to generate N random intervals based on the chosen distr. function. We wait for the generated time and write the timestamp on a file
 def task_sequence(worker_id, distr, parameters, N, output_file):
     
-    # Generation of the inter-event values (N)
+    # Generation of the inter-event values (SIZE = N)
     if distr == 'd':  # Deterministic
         values = np.full(N, parameters["tau"])
     elif distr == 'u':  # Uniform [0, T]
@@ -22,12 +27,13 @@ def task_sequence(worker_id, distr, parameters, N, output_file):
     
     # Execution of the generated interval
     for v in values:
-        time.sleep(v)  # Attesa dell'intervallo generato
-        ts_ms = round(time.time() * 1000)  # Timestamp in millisecondi
+        time.sleep(v)  # We wait for the generated interval
+        ts_ms = int(round(time.time() * 1000))  # Timestamp in ms
         
-        # Then we write on the file
-        with open(output_file, "a") as f:
-            f.write(f"{worker_id},{ts_ms}\n")
+        # Then we write to file safely using the appropriate lock
+        with mode_lock:
+            with open(output_file, "a") as f:
+                f.write(f"{worker_id},{ts_ms}\n")
     
     return values
 
@@ -78,19 +84,24 @@ def compute_averages(output_file):
 
     print("\nResults:")
     
-    # Average per worker computation
+    
+    # Total storage for all intervals
+    total_intervals = []
+    
     for worker_id, ts_list in sorted(timestamps.items()):
-        ts_list.sort() # Assicura l'ordine cronologico
-        intervals = [ts_list[i + 1] - ts_list[i] for i in range(len(ts_list) - 1)]
-        avg = sum(intervals) / len(intervals) if intervals else 0
-        print(f"Worker {worker_id}: Media inter-evento = {avg:.2f} ms")
-
-    # Total average
-    all_ts = sorted([ts for sub in timestamps.values() for ts in sub])
-    overall_intervals = [all_ts[i + 1] - all_ts[i] for i in range(len(all_ts) - 1)]
-    overall_avg = sum(overall_intervals) / len(overall_intervals) if overall_intervals else 0
-    print(f"\nMedia inter-evento globale: {overall_avg:.2f} ms")
-
+        # Convert to numpy array and sort
+        ts_array = np.sort(ts_list)
+        # np.diff calculates [ts[1]-ts[0], ts[2]-ts[1], ...]
+        intervals = np.diff(ts_array)
+        
+        if len(intervals) > 0:
+            avg = np.mean(intervals)
+            total_intervals.extend(intervals)
+            print(f"Worker {worker_id}: Media inter-evento = {avg:.2f} ms")
+    
+    if total_intervals:
+        print(f"\nMedia inter-evento globale: {np.mean(total_intervals):.2f} ms")
+    
 # MAIN part for parsing
 
 if __name__ == "__main__":
