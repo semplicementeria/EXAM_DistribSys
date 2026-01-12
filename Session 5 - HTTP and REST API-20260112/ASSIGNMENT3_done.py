@@ -159,12 +159,28 @@ if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5001, debug=True)
 
 
-# TEST:
+# TEST: first we have to run the code to run the server in a terminal. In the other...
 '''
-Create a new resource: curl -X POST http://localhost:5001/response/v1/resources  -H "Content-Type: application/json" -d '{"distr": "deterministic", "params": {"fixed": 2}, "task": "sleep"}'
-To see all resources: curl http://localhost:5001/response/v1/resources
-To run the resources ( so to simulate the delay): curl http://localhost:5001/response/v1/resources/3a4d6d2a-8c8f-4a2c-ae9e-6ad6d9b5f2c1/run
-To update the resources: curl -X PUT http://localhost:5001/response/v1/resources/3a4d6d2a-8c8f-4a2c-ae9e-6ad6d9b5f2c1 -H "Content-Type: application/json" -d '{"distr": "exponential", "params": {"lambda": 0.5}, "task": "cpu"}'
-To delete the resources: curl -X DELETE http://localhost:5001/response/v1/resources/3a4d6d2a-8c8f-4a2c-ae9e-6ad6d9b5f2c1
-Then we can check the list again: curl http://localhost:5001/response/v1/resources
+1) curl -X POST http://localhost:5001/response/v1/resources \
+     -H "Content-Type: application/json" \
+     -d '{"distr": "deterministic", "params": {"fixed": 3}, "task": "cpu"}' (here we can change the deterministic 
+     with the uniform or the exponential by changing the name and the values like...
+     
+     -d '{"distr": "uniform", "params": {"T": 10}, "task": "sleep"}'
+     or:
+     -d '{"distr": "exponential", "params": {"lambda": 0.5}, "task": "sleep"}')
+
+2) curl http://localhost:5001/response/v1/resources to see if the server has saved all the resources
+and then we run them:
+curl http://localhost:5001/response/v1/resources/<ID>/run
+
+3) We can update a resource (for example to a 1-second fixed CPU task):
+curl -X PUT http://localhost:5001/response/v1/resources/<ID> \
+     -H "Content-Type: application/json" \
+     -d '{"distr": "deterministic", "params": {"fixed": 1}, "task": "cpu"}' 
+
+4) and delete it:
+curl -X DELETE http://localhost:5001/response/v1/resources/<ID>
+
+5) curl http://localhost:5001/response/v1/resources final check to see if all went right
 '''
