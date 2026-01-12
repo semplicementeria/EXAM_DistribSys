@@ -5,9 +5,9 @@ import time
 import argparse
 import os
 
-
-# Function to generate N random intervals based on the chosen distr. function. We wait for the generated time and write the timestamp on a file
-def task_sequence(worker_id, distr, parameters, N, output_file):
+# Function to generate N random intervals based on the chosen distr. function. 
+# We wait for the generated time and write the timestamp on a file
+def task_sequence(worker_id, distr, parameters, N, output_file, lock):
     
     # Generation of the inter-event values (SIZE = N)
     if distr == 'd':  # Deterministic
@@ -26,36 +26,38 @@ def task_sequence(worker_id, distr, parameters, N, output_file):
         time.sleep(v)  # We wait for the generated interval
         ts_ms = int(round(time.time() * 1000))  # Timestamp in ms
         
-        with open(output_file, "a") as f:
-            f.write(f"{worker_id},{ts_ms}\n")
+        # Use the lock to prevent multiple workers from writing at the same time
+        with lock:
+            with open(output_file, "a") as f:
+                f.write(f"{worker_id},{ts_ms}\n")
     
     return values
 
 # The following are the execution modes:
 
-def sequential_workers(W, distr, parameters, N, output_file):
+def sequential_workers(W, distr, parameters, N, output_file, lock):
     # In the same process each worker is executed one after the other
     print(f"Starting sequential mode for worker {W}")
     for i in range(W):
-        task_sequence(i + 1, distr, parameters, N, output_file)
+        task_sequence(i + 1, distr, parameters, N, output_file, lock)
 
-def multithreading_workers(W, distr, parameters, N, output_file):
+def multithreading_workers(W, distr, parameters, N, output_file, lock):
     # Parallel workers by using threads
     print(f"Starting multithreading mode for worker {W}")
     threads = []
     for i in range(W):
-        t = threading.Thread(target=task_sequence, args=(i + 1, distr, parameters, N, output_file))
+        t = threading.Thread(target=task_sequence, args=(i + 1, distr, parameters, N, output_file, lock))
         threads.append(t)
         t.start()
     for t in threads:
         t.join()
 
-def multiprocessing_workers(W, distr, parameters, N, output_file):
+def multiprocessing_workers(W, distr, parameters, N, output_file, lock):
     # Parallel workers but with separated processes
     print(f"Starting multiprocessing mode for worker {W}")
     processes = []
     for i in range(W):
-        p = multiprocessing.Process(target=task_sequence, args=(i + 1, distr, parameters, N, output_file))
+        p = multiprocessing.Process(target=task_sequence, args=(i + 1, distr, parameters, N, output_file, lock))
         processes.append(p)
         p.start()
     for p in processes:
@@ -68,16 +70,20 @@ def compute_averages(output_file):
     timestamps = {}
     
     # Then we read and group the workers
+    if not os.path.exists(output_file):
+        return
+
     with open(output_file, "r") as f:
-        next(f)  
+        next(f)  # Skip header
         for line in f:
-            worker_id, ts = map(int, line.strip().split(","))
-            if worker_id not in timestamps:
-                timestamps[worker_id] = []
-            timestamps[worker_id].append(ts)
+            parts = line.strip().split(",")
+            if len(parts) == 2:
+                worker_id, ts = map(int, parts)
+                if worker_id not in timestamps:
+                    timestamps[worker_id] = []
+                timestamps[worker_id].append(ts)
 
     print("\nResults:")
-    
     
     # Total storage for all intervals
     total_intervals = []
@@ -102,7 +108,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Analysis of inter-event intervals")
     parser.add_argument("--workers", "-w", type=int, required=True, help="Number of workers (W)")
     parser.add_argument("--intervals", "-n", type=int, required=True, help="Intervals per worker (N)")
-    parser.add_argument("--dist", "-d", type=str, choices=["d", "u", "e"], required=True, help="Sidtribution function (d, u, e)")
+    parser.add_argument("--dist", "-d", type=str, choices=["d", "u", "e"], required=True, help="Distribution function (d, u, e)")
     parser.add_argument("--param", "-p", type=float, required=True, help="Distribution parameter")
     parser.add_argument("--file", "-f", type=str, required=True, help="Output file (.txt)")
     parser.add_argument("--mode", "-m", type=str, choices=["seq", "threads", "processes"], required=True, help="Mode")
@@ -114,6 +120,9 @@ if __name__ == "__main__":
         print("Error: the file has to be .txt")
         exit(1)
 
+    # Initialize the lock for synchronization
+    lock = multiprocessing.Lock()
+
     with open(args.file, "w") as f:
         f.write("worker_id,timestamp_ms\n")
 
@@ -122,16 +131,14 @@ if __name__ == "__main__":
 
     # Selection of the execution mode
     if args.mode == "seq":
-        sequential_workers(args.workers, args.dist, params, args.intervals, args.file)
+        sequential_workers(args.workers, args.dist, params, args.intervals, args.file, lock)
     elif args.mode == "threads":
-        multithreading_workers(args.workers, args.dist, params, args.intervals, args.file)
+        multithreading_workers(args.workers, args.dist, params, args.intervals, args.file, lock)
     elif args.mode == "processes":
-        multiprocessing_workers(args.workers, args.dist, params, args.intervals, args.file)
+        multiprocessing_workers(args.workers, args.dist, params, args.intervals, args.file, lock)
 
     # Final analysis
     compute_averages(args.file)
 
-#to try in the command line:
-
-#python ASSIGNMENT1_done.py --workers 4 --intervals 10 --dist u --param 2.0 --file output.txt --mode processes
-# d, u and e for the distributions, and seq, threads and processes for the mode
+# to try in the command line:
+# python ASSIGNMENT1_done.py --workers 4 --intervals 10 --dist u --param 2.0 --file output.txt --mode processes
