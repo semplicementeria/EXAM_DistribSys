@@ -5,10 +5,6 @@ import time
 import argparse
 import os
 
-#I've added the lock to ensure that only one worker writes the file at a time in order to prevent race  conditions.
-
-file_lock = multiprocessing.Lock()
-thread_lock = threading.Lock()
 
 # Function to generate N random intervals based on the chosen distr. function. We wait for the generated time and write the timestamp on a file
 def task_sequence(worker_id, distr, parameters, N, output_file):
@@ -30,10 +26,8 @@ def task_sequence(worker_id, distr, parameters, N, output_file):
         time.sleep(v)  # We wait for the generated interval
         ts_ms = int(round(time.time() * 1000))  # Timestamp in ms
         
-        # Then we write to file safely using the appropriate lock
-        with mode_lock:
-            with open(output_file, "a") as f:
-                f.write(f"{worker_id},{ts_ms}\n")
+        with open(output_file, "a") as f:
+            f.write(f"{worker_id},{ts_ms}\n")
     
     return values
 
@@ -75,7 +69,7 @@ def compute_averages(output_file):
     
     # Then we read and group the workers
     with open(output_file, "r") as f:
-        next(f)  # Salta l'intestazione CSV
+        next(f)  
         for line in f:
             worker_id, ts = map(int, line.strip().split(","))
             if worker_id not in timestamps:
@@ -97,27 +91,27 @@ def compute_averages(output_file):
         if len(intervals) > 0:
             avg = np.mean(intervals)
             total_intervals.extend(intervals)
-            print(f"Worker {worker_id}: Media inter-evento = {avg:.2f} ms")
+            print(f"Worker {worker_id}: Inter-event average = {avg:.2f} ms")
     
     if total_intervals:
-        print(f"\nMedia inter-evento globale: {np.mean(total_intervals):.2f} ms")
+        print(f"\nGlobal inter-event average: {np.mean(total_intervals):.2f} ms")
     
 # MAIN part for parsing
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Analisi tempi inter-evento con concorrenza")
-    parser.add_argument("--workers", "-w", type=int, required=True, help="Numero di worker (W)")
-    parser.add_argument("--intervals", "-n", type=int, required=True, help="Intervalli per worker (N)")
-    parser.add_argument("--dist", "-d", type=str, choices=["d", "u", "e"], required=True, help="Distribuzione (d, u, e)")
-    parser.add_argument("--param", "-p", type=float, required=True, help="Parametro della distribuzione")
-    parser.add_argument("--file", "-f", type=str, required=True, help="File di output (.txt)")
-    parser.add_argument("--mode", "-m", type=str, choices=["seq", "threads", "processes"], required=True, help="Modalità")
+    parser = argparse.ArgumentParser(description="Analysis of inter-event intervals")
+    parser.add_argument("--workers", "-w", type=int, required=True, help="Number of workers (W)")
+    parser.add_argument("--intervals", "-n", type=int, required=True, help="Intervals per worker (N)")
+    parser.add_argument("--dist", "-d", type=str, choices=["d", "u", "e"], required=True, help="Sidtribution function (d, u, e)")
+    parser.add_argument("--param", "-p", type=float, required=True, help="Distribution parameter")
+    parser.add_argument("--file", "-f", type=str, required=True, help="Output file (.txt)")
+    parser.add_argument("--mode", "-m", type=str, choices=["seq", "threads", "processes"], required=True, help="Mode")
 
     args = parser.parse_args()
 
     # Initialization of the output file
     if not args.file.endswith(".txt"):
-        print("Errore: Il file deve avere estensione .txt")
+        print("Error: the file has to be .txt")
         exit(1)
 
     with open(args.file, "w") as f:
@@ -136,3 +130,8 @@ if __name__ == "__main__":
 
     # Final analysis
     compute_averages(args.file)
+
+#to try in the command line:
+
+#python ASSIGNMENT1_done.py --workers 4 --intervals 10 --dist u --param 2.0 --file output.txt --mode processes
+# d, u and e for the distributions, and seq, threads and processes for the mode
