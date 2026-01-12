@@ -1,0 +1,57 @@
+// Protocol Buffer revision specification
+syntax = "proto3";
+
+// Package declaration to prevent naming conflicts between different projects
+package people;
+
+// Resource message definition, including each field specification and their respective 
+// "tag" used in the binary encoding.
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+// Message definition to list all resources
+message UserList {
+  repeated User user = 1;
+}
+
+// Empty message definition
+message Empty {}
+
+// Message definition for creating a new resource (request)
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+}
+
+// Message definition for creating a new resource (response)
+message CreateUserResponse {
+  string id = 1;
+  string message = 2;
+}
+
+// Message definition to retrieve a given resource
+message UserIdRequest {
+  string id = 1;
+}
+
+// Message definition for updating/deleting a given resource (response)
+message UpdateUserResponse {
+  string message = 1;
+}
+
+// RPC service definition, including the relevant interactions
+service UserService {
+  // Method to retrieve all resources
+  rpc GetAllUsers (Empty) returns (UserList);
+  // Method to create a new resource
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+  // Method to retrieve a specified resource
+  rpc GetUserById (UserIdRequest) returns (User);
+  // Method to update a specified resource
+  rpc UpdateUser (User) returns (UpdateUserResponse);
+  // Method to delete a specified resource
+  rpc DeleteUserById (UserIdRequest) returns (UpdateUserResponse);
+}
