@@ -196,17 +196,17 @@ if __name__ == "__main__":
 
 
 #POSSIBLE TESTS: 
-# 1. un server, un client, multithread: python3 Assignment_2_SERVER.py --port 55000 --concurrency-mode thr --verbose
-#python3 Assignment_2_CLIENT.py --workers 3 --intervals 5 --dist u --param 2.0 --server 127.0.0.1 --port 55000 --verbose
+# 1. un server, un client, multithread: python3 ASSIGNMENT2_SERVER_done.py --port 55000 --concurrency-mode thr --verbose
+#python3 ASSIGNMENT2_CLIENT_done.py --workers 3 --intervals 5 --dist u --param 2.0 --server 127.0.0.1 --port 55000 --verbose
 
-#2. un server, client multipli in concurrency mode: python3 Assignment_2_SERVER.py --port 55001 --concurrency-mode thr --verbose
-#python3 Assignment_2_CLIENT.py -w 2 -n 4 -d d -p 1.0 -s 127.0.0.1 -P 55001 -v
-#python3 Assignment_2_CLIENT.py -w 3 -n 5 -d u -p 2.0 -s 127.0.0.1 -P 55001 -v
-#python3 Assignment_2_CLIENT.py -w 4 -n 6 -d e -p 0.5 -s 127.0.0.1 -P 55001 -v
+#2. un server, client multipli in concurrency mode: python3 ASSIGNMENT2_SERVER_done.py --port 55001 --concurrency-mode proc --verbose
+#python3 ASSIGNMENT2_CLIENT_done.py -w 2 -n 4 -d d -p 1.0 -s 127.0.0.1 -P 55001 -v
+#python3 ASSIGNMENT2_CLIENT_done.py -w 3 -n 5 -d u -p 2.0 -s 127.0.0.1 -P 55001 -v
+#python3 ASSIGNMENT2_CLIENT_done.py -w 4 -n 6 -d e -p 0.5 -s 127.0.0.1 -P 55001 -v
 
 #3. server iterativo e due client: 
-#python Assignment_2_SERVER.py --port 55002 --concurrency-mode iter --verbose 
-#python Assignment_2_CLIENT.py -w 2 -n 4 -d u -p 1.0 -s 127.0.0.1 -P 55002 -v
-#python Assignment_2_CLIENT.py -w 3 -n 3 -d d -p 0.5 -s 127.0.0.1 -P 55002 -v
+#python ASSIGNMENT2_SERVER_done.py --port 55002 --concurrency-mode iter --verbose 
+#python ASSIGNMENT2_CLIENT_done.py -w 2 -n 4 -d u -p 1.0 -s 127.0.0.1 -P 55002 -v
+#python ASSIGNMENT2_CLIENT_done.py -w 3 -n 3 -d d -p 0.5 -s 127.0.0.1 -P 55002 -v
 
 
