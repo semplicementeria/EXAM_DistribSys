@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package assignment4;
+
+// The request message containing distribution type and the parameter
+message GenerateRequest {
+    string distr_type = 1; // "deterministic", "uniform", or "exponential"
+    double parameter = 2;   // fixed time, T, or lambda
+}
+
+// The response message returning the time spent and a status message
+message GenerateResponse {
+    double generated_time = 1;
+    string message = 2;
+}
+
+// Service definition
+service DistributionService {
+    rpc GenerateResponseTime(GenerateRequest) returns (GenerateResponse);
+}
