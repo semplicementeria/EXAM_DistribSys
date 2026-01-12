@@ -2,8 +2,8 @@ import argparse
 import time
 import grpc
 import threading
-import Assignment_4_pb2
-import Assignment_4_pb2_grpc
+import ASSIGNMENT4_pb2
+import ASSIGNMENT4_pb2_grpc
 
 def send_request(distr_type, param, server_address, verbose=False, thread_id=None):
     """
@@ -14,14 +14,14 @@ def send_request(distr_type, param, server_address, verbose=False, thread_id=Non
     try:
         # Create a channel and a stub
         with grpc.insecure_channel(server_address) as channel:
-            stub = Assignment_4_pb2_grpc.DistributionServiceStub(channel)
+            stub = ASSIGNMENT4_pb2_grpc.DistributionServiceStub(channel)
 
             if verbose:
                 print(f"{prefix}Connecting to {server_address}...")
 
             # Prepare the request message
             # Note: Ensure these field names match your .proto definition
-            request = Assignment_4_pb2.GenerateRequest(
+            request = ASSIGNMENT4_pb2.GenerateRequest(
                 distr_type=distr_type, 
                 parameter=param
             )
