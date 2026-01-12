@@ -5,48 +5,43 @@ import time
 import argparse
 import os
 
-# --- CORE LOGIC ---
-
+# Function to generate intervals based on the chosen distr. function. We wait for the generated time and write the timestamp on a file
 def task_sequence(worker_id, distr, parameters, N, output_file):
-    """
-    Genera N intervalli basati sulla distribuzione scelta, attende il tempo 
-    generato e scrive il timestamp su file.
-    """
-    # Generazione degli intervalli inter-evento (N valori)
-    if distr == 'd':  # Deterministica
+    
+    # Generation of the inter-event values (N)
+    if distr == 'd':  # Deterministic
         values = np.full(N, parameters["tau"])
-    elif distr == 'u':  # Uniforme [0, T]
+    elif distr == 'u':  # Uniform [0, T]
         values = np.random.uniform(0.0, parameters["T"], N)
-    elif distr == 'e':  # Esponenziale con parametro lambda
+    elif distr == 'e':  # Exponential with lambda as a parameter
         values = np.random.exponential(1 / parameters["lambda"], N)
     else:
         values = np.full(N, 1.0)
     
-    print(f"Worker {worker_id} ha generato gli intervalli: {values}")
+    print(f"Worker {worker_id} has generated the following intervals: {values}")
     
-    # Esecuzione della sequenza di eventi
+    # Execution of the generated interval
     for v in values:
         time.sleep(v)  # Attesa dell'intervallo generato
         ts_ms = round(time.time() * 1000)  # Timestamp in millisecondi
         
-        # Scrittura su file (append mode). 
-        # Nota: In Python l'append di stringhe brevi è generalmente gestito dal SO in modo atomico.
+        # Then we write on the file
         with open(output_file, "a") as f:
             f.write(f"{worker_id},{ts_ms}\n")
     
     return values
 
-# --- EXECUTION MODES ---
+# The following are the execution modes:
 
 def sequential_workers(W, distr, parameters, N, output_file):
-    """Esegue i worker uno dopo l'altro nello stesso processo."""
-    print(f"Avvio di {W} worker in modalità SEQUENZIALE...")
+    # In the same process each worker is executed one after the other
+    print(f"Starting sequential mode for worker {W}")
     for i in range(W):
         task_sequence(i + 1, distr, parameters, N, output_file)
 
 def multithreading_workers(W, distr, parameters, N, output_file):
-    """Esegue i worker parallelamente utilizzando i Thread."""
-    print(f"Avvio di {W} worker in modalità MULTITHREADING...")
+    # Parallel workers by using threads
+    print(f"Starting multithreading mode for worker {W}")
     threads = []
     for i in range(W):
         t = threading.Thread(target=task_sequence, args=(i + 1, distr, parameters, N, output_file))
@@ -56,8 +51,8 @@ def multithreading_workers(W, distr, parameters, N, output_file):
         t.join()
 
 def multiprocessing_workers(W, distr, parameters, N, output_file):
-    """Esegue i worker parallelamente utilizzando Processi separati."""
-    print(f"Avvio di {W} worker in modalità MULTIPROCESSING...")
+    # Parallel workers but with separated processes
+    print(f"Starting multiprocessing mode for worker {W}")
     processes = []
     for i in range(W):
         p = multiprocessing.Process(target=task_sequence, args=(i + 1, distr, parameters, N, output_file))
@@ -66,13 +61,13 @@ def multiprocessing_workers(W, distr, parameters, N, output_file):
     for p in processes:
         p.join()
 
-# --- DATA ANALYSIS ---
+# Data analysis part:
 
 def compute_averages(output_file):
-    """Legge i timestamp dal file e calcola la media per worker e globale."""
+    # here we read the timestamps from the file in order to compute the average per worker and the global one
     timestamps = {}
     
-    # Lettura e raggruppamento dei dati per worker_id
+    # Then we read and group the workers
     with open(output_file, "r") as f:
         next(f)  # Salta l'intestazione CSV
         for line in f:
@@ -81,22 +76,22 @@ def compute_averages(output_file):
                 timestamps[worker_id] = []
             timestamps[worker_id].append(ts)
 
-    print("\n--- RISULTATI ANALISI ---")
+    print("\nResults:")
     
-    # Calcolo della media per singolo worker
+    # Average per worker computation
     for worker_id, ts_list in sorted(timestamps.items()):
         ts_list.sort() # Assicura l'ordine cronologico
         intervals = [ts_list[i + 1] - ts_list[i] for i in range(len(ts_list) - 1)]
         avg = sum(intervals) / len(intervals) if intervals else 0
         print(f"Worker {worker_id}: Media inter-evento = {avg:.2f} ms")
 
-    # Calcolo della media complessiva (tutti i timestamp uniti)
+    # Total average
     all_ts = sorted([ts for sub in timestamps.values() for ts in sub])
     overall_intervals = [all_ts[i + 1] - all_ts[i] for i in range(len(all_ts) - 1)]
     overall_avg = sum(overall_intervals) / len(overall_intervals) if overall_intervals else 0
     print(f"\nMedia inter-evento globale: {overall_avg:.2f} ms")
 
-# --- MAIN ENTRY POINT ---
+# MAIN part for parsing
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Analisi tempi inter-evento con concorrenza")
@@ -109,7 +104,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # Inizializzazione file di output
+    # Initialization of the output file
     if not args.file.endswith(".txt"):
         print("Errore: Il file deve avere estensione .txt")
         exit(1)
@@ -117,10 +112,10 @@ if __name__ == "__main__":
     with open(args.file, "w") as f:
         f.write("worker_id,timestamp_ms\n")
 
-    # Mappatura parametri distribuzione
+    # Mapping of the parameters for the distribution
     params = {"tau": args.param, "T": args.param, "lambda": args.param}
 
-    # Selezione della modalità di esecuzione
+    # Selection of the execution mode
     if args.mode == "seq":
         sequential_workers(args.workers, args.dist, params, args.intervals, args.file)
     elif args.mode == "threads":
@@ -128,5 +123,5 @@ if __name__ == "__main__":
     elif args.mode == "processes":
         multiprocessing_workers(args.workers, args.dist, params, args.intervals, args.file)
 
-    # Analisi finale
+    # Final analysis
     compute_averages(args.file)
