@@ -1,0 +1,479 @@
+root@d663ac86effb:/# ip netns add R1
+root@d663ac86effb:/# ip link add veth-r1 type veth peer name veth-r2
+root@d663ac86effb:/# ip link set veth-r1 netns R1
+root@d663ac86effb:/# ip link show
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: eth0@if40: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default 
+    link/ether 7e:b1:4a:38:cc:14 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+7: veth-r2@if8: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 32:47:2e:ac:1d:b4 brd ff:ff:ff:ff:ff:ff link-netns R1
+root@d663ac86effb:/# ip netns del R1 2>/dev/null
+root@d663ac86effb:/# ip netns del R2 2>/dev/null
+root@d663ac86effb:/# ip link del veth-r1 2>/dev/null
+root@d663ac86effb:/# ip link del veth-r2 2>/dev/null
+root@d663ac86effb:/# ip netns add R1
+root@d663ac86effb:/# ip netns add R2
+root@d663ac86effb:/# ip link set veth-r1 netns R1
+Cannot find device "veth-r1"
+root@d663ac86effb:/# ip link add veth-r1 type veth peer name veth-r2
+root@d663ac86effb:/# ip link set veth-r1 netns R1
+root@d663ac86effb:/# ip link set veth-r2 netns R2
+root@d663ac86effb:/# ip netns exec R1 ip addr add 10.0.0.1/24 dev veth-r1
+root@d663ac86effb:/# ip netns exec R2 ip addr add 10.0.0.2/24 dev veth-r2
+root@d663ac86effb:/# ip netns exec R1 ip link set veth-r1 up
+root@d663ac86effb:/# ip netns exec R2 ip link set veth-r2 up
+root@d663ac86effb:/# ip netns exec R1 ping 10.0.0.2
+PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
+64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=0.154 ms
+64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=0.079 ms
+64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=0.059 ms
+^C
+--- 10.0.0.2 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2052ms
+rtt min/avg/max/mdev = 0.059/0.097/0.154/0.040 ms
+root@d663ac86effb:/# sudo modprobe ip_gre            
+bash: sudo: command not found
+root@d663ac86effb:/# ip tunnel add GRE_DEV_NAME mode gre remote REMOTE_TUNNEL_IP local
+LOCAL_TUNNEL_IP ttl 63
+Error: an IP address is expected rather than "REMOTE_TUNNEL_IP"
+bash: LOCAL_TUNNEL_IP: command not found
+root@d663ac86effb:/# ip tunnel add greR1 mode gre remote 10.0.0.2 local 10.0.0.1 ttl 63
+root@d663ac86effb:/# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0@if40: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 7e:b1:4a:38:cc:14 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+11: gre0@NONE: <NOARP> mtu 1476 qdisc noop state DOWN group default qlen 1000
+    link/gre 0.0.0.0 brd 0.0.0.0
+12: gretap0@NONE: <BROADCAST,MULTICAST> mtu 1462 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+13: erspan0@NONE: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+14: greR1@NONE: <POINTOPOINT,NOARP> mtu 1476 qdisc noop state DOWN group default qlen 1000
+    link/gre 10.0.0.1 peer 10.0.0.2
+root@d663ac86effb:/# ip link set dev greR1 up
+root@d663ac86effb:/# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0@if40: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 7e:b1:4a:38:cc:14 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+11: gre0@NONE: <NOARP> mtu 1476 qdisc noop state DOWN group default qlen 1000
+    link/gre 0.0.0.0 brd 0.0.0.0
+12: gretap0@NONE: <BROADCAST,MULTICAST> mtu 1462 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+13: erspan0@NONE: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+14: greR1@NONE: <POINTOPOINT,NOARP,UP,LOWER_UP> mtu 1476 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/gre 10.0.0.1 peer 10.0.0.2
+    inet6 fe80::a00:1/64 scope link 
+       valid_lft forever preferred_lft forever
+root@d663ac86effb:/# ip addr add 192.168.1.1/24 dev greR1       
+root@d663ac86effb:/# ip tunnel add greR2 mode gre remote 10.0.0.1 local 10.0.0.2 ttl 63
+root@d663ac86effb:/# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0@if40: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 7e:b1:4a:38:cc:14 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+11: gre0@NONE: <NOARP> mtu 1476 qdisc noop state DOWN group default qlen 1000
+    link/gre 0.0.0.0 brd 0.0.0.0
+12: gretap0@NONE: <BROADCAST,MULTICAST> mtu 1462 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+13: erspan0@NONE: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+14: greR1@NONE: <POINTOPOINT,NOARP,UP,LOWER_UP> mtu 1476 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/gre 10.0.0.1 peer 10.0.0.2
+    inet 192.168.1.1/24 scope global greR1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:1/64 scope link 
+       valid_lft forever preferred_lft forever
+15: greR2@NONE: <POINTOPOINT,NOARP> mtu 1476 qdisc noop state DOWN group default qlen 1000
+    link/gre 10.0.0.2 peer 10.0.0.1
+root@d663ac86effb:/# ip link set dev greR2 up
+root@d663ac86effb:/# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0@if40: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 7e:b1:4a:38:cc:14 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+11: gre0@NONE: <NOARP> mtu 1476 qdisc noop state DOWN group default qlen 1000
+    link/gre 0.0.0.0 brd 0.0.0.0
+12: gretap0@NONE: <BROADCAST,MULTICAST> mtu 1462 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+13: erspan0@NONE: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+14: greR1@NONE: <POINTOPOINT,NOARP,UP,LOWER_UP> mtu 1476 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/gre 10.0.0.1 peer 10.0.0.2
+    inet 192.168.1.1/24 scope global greR1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:1/64 scope link 
+       valid_lft forever preferred_lft forever
+15: greR2@NONE: <POINTOPOINT,NOARP,UP,LOWER_UP> mtu 1476 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/gre 10.0.0.2 peer 10.0.0.1
+    inet6 fe80::a00:2/64 scope link 
+       valid_lft forever preferred_lft forever
+root@d663ac86effb:/# ip link add vxlanR1 type vxlan id VNI local 10.0.0.1 remote
+10.0.0.2 nolearning dstport 4789
+Error: argument "VNI" is wrong: invalid id
+bash: 10.0.0.2: command not found
+root@d663ac86effb:/# ip link add vxlanR1 type vxlan id VNI local 10.0.0.1 remote
+Error: argument "VNI" is wrong: invalid id
+root@d663ac86effb:/# ip link add vxlanR1 type vxlan id 10 local 10.0.0.1 remote 10.0.0.2 nolearning dstport 4789+
+Error: argument "4789+" is wrong: dst port
+root@d663ac86effb:/# ip link add vxlanR1 type vxlan id 10 local 10.0.0.1 remote 10.0.0.2 nolearning dstport 4789 
+root@d663ac86effb:/# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0@if40: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 7e:b1:4a:38:cc:14 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+11: gre0@NONE: <NOARP> mtu 1476 qdisc noop state DOWN group default qlen 1000
+    link/gre 0.0.0.0 brd 0.0.0.0
+12: gretap0@NONE: <BROADCAST,MULTICAST> mtu 1462 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+13: erspan0@NONE: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+14: greR1@NONE: <POINTOPOINT,NOARP,UP,LOWER_UP> mtu 1476 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/gre 10.0.0.1 peer 10.0.0.2
+    inet 192.168.1.1/24 scope global greR1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:1/64 scope link 
+       valid_lft forever preferred_lft forever
+15: greR2@NONE: <POINTOPOINT,NOARP,UP,LOWER_UP> mtu 1476 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/gre 10.0.0.2 peer 10.0.0.1
+    inet6 fe80::a00:2/64 scope link 
+       valid_lft forever preferred_lft forever
+16: vxlanR1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether fe:97:b0:24:9d:f3 brd ff:ff:ff:ff:ff:ff
+root@d663ac86effb:/# ip link add vxlanR2 type vxlan id 10 local 10.0.0.2 remote 10.0.0.1 nolearning dstport 4789
+Error: A VXLAN device with the specified VNI already exists.
+root@d663ac86effb:/# ip link set vxlanR1 up
+root@d663ac86effb:/# ip addr 
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0@if40: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 7e:b1:4a:38:cc:14 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+11: gre0@NONE: <NOARP> mtu 1476 qdisc noop state DOWN group default qlen 1000
+    link/gre 0.0.0.0 brd 0.0.0.0
+12: gretap0@NONE: <BROADCAST,MULTICAST> mtu 1462 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+13: erspan0@NONE: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+14: greR1@NONE: <POINTOPOINT,NOARP,UP,LOWER_UP> mtu 1476 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/gre 10.0.0.1 peer 10.0.0.2
+    inet 192.168.1.1/24 scope global greR1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:1/64 scope link 
+       valid_lft forever preferred_lft forever
+15: greR2@NONE: <POINTOPOINT,NOARP,UP,LOWER_UP> mtu 1476 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/gre 10.0.0.2 peer 10.0.0.1
+    inet6 fe80::a00:2/64 scope link 
+       valid_lft forever preferred_lft forever
+16: vxlanR1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/ether fe:97:b0:24:9d:f3 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::fc97:b0ff:fe24:9df3/64 scope link 
+       valid_lft forever preferred_lft forever
+root@d663ac86effb:/# ip link add vxlanR2 type vxlan id 10 local 10.0.0.2 remote 10.0.0.1 nolearning dstport 4789
+Error: A VXLAN device with the specified VNI already exists.
+root@d663ac86effb:/# ip link add vxlanR2 type vxlan id 11 local 10.0.0.2 remote 10.0.0.1 nolearning dstport 4789
+root@d663ac86effb:/# ip link set vxlanR2 up
+root@d663ac86effb:/# ping 10.0.0.2                     
+PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
+^X^C
+--- 10.0.0.2 ping statistics ---
+13 packets transmitted, 0 received, 100% packet loss, time 12292ms
+
+root@d663ac86effb:/# ping 10.0.0.2
+PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
+^C
+--- 10.0.0.2 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2048ms
+
+root@d663ac86effb:/# ping 10.0.0.1
+PING 10.0.0.1 (10.0.0.1) 56(84) bytes of data.
+^C
+--- 10.0.0.1 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2040ms
+
+root@d663ac86effb:/# ip link add dev wg0 type wireguard
+root@d663ac86effb:/# wg genkey | sudo tee ciao.key
+bash: sudo: command not found
+bash: wg: command not found
+root@d663ac86effb:/# wg genkey | tee ciao.key
+bash: wg: command not found
+root@d663ac86effb:/# wg genkey | tee r1_private.key
+bash: wg: command not found
+root@d663ac86effb:/# apt update
+apt install wireguard-tools -y
+Hit:1 http://ports.ubuntu.com/ubuntu-ports noble InRelease
+Get:2 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease [126 kB]
+Get:3 http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease [126 kB]
+Get:4 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease [126 kB]
+Get:5 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Packages [1899 kB]
+Get:6 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Packages [2237 kB]                                                               
+Fetched 4515 kB in 10s (475 kB/s)                                                                                                                    
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+11 packages can be upgraded. Run 'apt list --upgradable' to see them.
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  libbsd0 libedit2 libjansson4 libnftables1 libnftnl11 netbase nftables
+Suggested packages:
+  firewalld openresolv | resolvconf
+The following NEW packages will be installed:
+  libbsd0 libedit2 libjansson4 libnftables1 libnftnl11 netbase nftables wireguard-tools
+0 upgraded, 8 newly installed, 0 to remove and 11 not upgraded.
+Need to get 769 kB of archives.
+After this operation, 2572 kB of additional disk space will be used.
+Get:1 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libbsd0 arm64 0.12.1-1build1.1 [41.0 kB]
+Get:2 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 netbase all 6.4 [13.1 kB]
+Get:3 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libedit2 arm64 3.1-20230828-1build1 [97.5 kB]
+Get:4 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libjansson4 arm64 2.14-2build2 [34.4 kB]
+Get:5 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libnftnl11 arm64 1.2.6-2build1 [66.2 kB]
+Get:6 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libnftables1 arm64 1.0.9-1build1 [352 kB]
+Get:7 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 nftables arm64 1.0.9-1build1 [70.0 kB]
+Get:8 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 wireguard-tools arm64 1.0.20210914-1ubuntu4 [94.1 kB]
+Fetched 769 kB in 1s (514 kB/s)          
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package libbsd0:arm64.
+(Reading database ... 4663 files and directories currently installed.)
+Preparing to unpack .../0-libbsd0_0.12.1-1build1.1_arm64.deb ...
+Unpacking libbsd0:arm64 (0.12.1-1build1.1) ...
+Selecting previously unselected package netbase.
+Preparing to unpack .../1-netbase_6.4_all.deb ...
+Unpacking netbase (6.4) ...
+Selecting previously unselected package libedit2:arm64.
+Preparing to unpack .../2-libedit2_3.1-20230828-1build1_arm64.deb ...
+Unpacking libedit2:arm64 (3.1-20230828-1build1) ...
+Selecting previously unselected package libjansson4:arm64.
+Preparing to unpack .../3-libjansson4_2.14-2build2_arm64.deb ...
+Unpacking libjansson4:arm64 (2.14-2build2) ...
+Selecting previously unselected package libnftnl11:arm64.
+Preparing to unpack .../4-libnftnl11_1.2.6-2build1_arm64.deb ...
+Unpacking libnftnl11:arm64 (1.2.6-2build1) ...
+Selecting previously unselected package libnftables1:arm64.
+Preparing to unpack .../5-libnftables1_1.0.9-1build1_arm64.deb ...
+Unpacking libnftables1:arm64 (1.0.9-1build1) ...
+Selecting previously unselected package nftables.
+Preparing to unpack .../6-nftables_1.0.9-1build1_arm64.deb ...
+Unpacking nftables (1.0.9-1build1) ...
+Selecting previously unselected package wireguard-tools.
+Preparing to unpack .../7-wireguard-tools_1.0.20210914-1ubuntu4_arm64.deb ...
+Unpacking wireguard-tools (1.0.20210914-1ubuntu4) ...
+Setting up libnftnl11:arm64 (1.2.6-2build1) ...
+Setting up libjansson4:arm64 (2.14-2build2) ...
+Setting up wireguard-tools (1.0.20210914-1ubuntu4) ...
+Setting up netbase (6.4) ...
+Setting up libbsd0:arm64 (0.12.1-1build1.1) ...
+Setting up libnftables1:arm64 (1.0.9-1build1) ...
+Setting up libedit2:arm64 (3.1-20230828-1build1) ...
+Setting up nftables (1.0.9-1build1) ...
+Processing triggers for libc-bin (2.39-0ubuntu8.6) ...
+root@d663ac86effb:/# wg genkey | tee r1_private.key
+EGr6XK+5d7DYnN7p4PI07FhZ67avdOEFGsDhnA66zm8=
+root@d663ac86effb:/# wg genkey | tee r2_private.key
+qKtEdwV3uCIrNGA0NcuseXo1ixm6U8dG+JHQofT7UXc=
+root@d663ac86effb:/# wg set wg0 private-key r1_private.key
+root@d663ac86effb:/# ip link set wg0 up
+root@d663ac86effb:/# ip netns exec R1 wg set wg0 \
+  peer qKtEdwV3uCIrNGA0NcuseXo1ixm6U8dG+JHQofT7UXc=
+ \                         
+  endpoint 10.0.0.2:51820 \
+  allowed-ips 10.10.10.2/32 
+Unable to modify interface: No such device
+bash: endpoint: command not found
+root@d663ac86effb:/# ip netns list                                                                  
+R2 (id: 2)
+R1 (id: 1)
+root@d663ac86effb:/# ip netns exec R1 ip addr
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: gre0@NONE: <NOARP> mtu 1476 qdisc noop state DOWN group default qlen 1000
+    link/gre 0.0.0.0 brd 0.0.0.0
+3: gretap0@NONE: <BROADCAST,MULTICAST> mtu 1462 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+4: erspan0@NONE: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+10: veth-r1@if9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether ce:b8:37:58:7a:f5 brd ff:ff:ff:ff:ff:ff link-netns R2
+    inet 10.0.0.1/24 scope global veth-r1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::ccb8:37ff:fe58:7af5/64 scope link 
+       valid_lft forever preferred_lft forever
+root@d663ac86effb:/# ip netns exec R2 ip addr
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: gre0@NONE: <NOARP> mtu 1476 qdisc noop state DOWN group default qlen 1000
+    link/gre 0.0.0.0 brd 0.0.0.0
+3: gretap0@NONE: <BROADCAST,MULTICAST> mtu 1462 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+4: erspan0@NONE: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+9: veth-r2@if10: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 72:6a:13:5a:25:dd brd ff:ff:ff:ff:ff:ff link-netns R1
+    inet 10.0.0.2/24 scope global veth-r2
+       valid_lft forever preferred_lft forever
+    inet6 fe80::706a:13ff:fe5a:25dd/64 scope link 
+       valid_lft forever preferred_lft forever
+root@d663ac86effb:/# ip netns exec R1 ping -c 3 10.0.0.2
+PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
+64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=0.129 ms
+64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=0.027 ms
+64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=0.043 ms
+
+--- 10.0.0.2 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2056ms
+rtt min/avg/max/mdev = 0.027/0.066/0.129/0.044 ms
+root@d663ac86effb:/# ip netns exec R2 ping -c 3 10.0.0.1
+PING 10.0.0.1 (10.0.0.1) 56(84) bytes of data.
+64 bytes from 10.0.0.1: icmp_seq=1 ttl=64 time=0.020 ms
+64 bytes from 10.0.0.1: icmp_seq=2 ttl=64 time=0.028 ms
+64 bytes from 10.0.0.1: icmp_seq=3 ttl=64 time=0.034 ms
+
+--- 10.0.0.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2024ms
+rtt min/avg/max/mdev = 0.020/0.027/0.034/0.005 ms
+root@d663ac86effb:/# ip netns exec R1 ip link show wg0
+Device "wg0" does not exist.
+root@d663ac86effb:/# Assignment 2 \342\200\223 VPN with WireGuard
+\342\200\242 Write a bash script that build this simple topology with two network namespaces. You can choose the IP
+network that you want.
+R1 R2
+\342\200\242 Single Router config (check official guide):
+ip link add dev wg0 type wireguard
+wg genkey | sudo tee <private_key_filename>.key
+wg set wg0 private-key <private_key_filename>.key
+ip link set wg0 up
+wg set wg0 peer <peer-public-key> endpoint <peer-ip>:<peer-port>
+allowed-ips <ip-ranges-allowed>
+wg to see the status of active WireGuard interfaces 
+bash: Assignment: command not found
+bash: $'\342\200\242': command not found
+bash: network: command not found
+bash: R1: command not found
+bash: syntax error near unexpected token `('
+RTNETLINK answers: File exists
+bash: private_key_filename: No such file or directory
+bash: private_key_filename: No such file or directory
+bash: syntax error near unexpected token `newline'
+bash: syntax error near unexpected token `newline'
+Invalid subcommand: `to'
+Usage: wg <cmd> [<args>]
+
+Available subcommands:
+  show: Shows the current configuration and device information
+  showconf: Shows the current configuration of a given WireGuard interface, for use with `setconf'
+  set: Change the current configuration, add peers, remove peers, or change peers
+  setconf: Applies a configuration file to a WireGuard interface
+  addconf: Appends a configuration file to a WireGuard interface
+  syncconf: Synchronizes a configuration file to a WireGuard interface
+  genkey: Generates a new private key and writes it to stdout
+  genpsk: Generates a new preshared key and writes it to stdout
+  pubkey: Reads a private key from stdin and writes a public key to stdout
+You may pass `--help' to any of these subcommands to view usage.
+root@d663ac86effb:/# ip netns exec R1 ip link add dev wg0 type wireguard
+root@d663ac86effb:/# wg genkey | tee r1_private.key
+WBKzUHzb1jUJ0MLKYhpdVVu/Y6RZTMdAPp4XhEnVIVY=
+root@d663ac86effb:/# ip netns exec R1 wg set wg0 private-key r1_private.key
+root@d663ac86effb:/# ip netns exec R1 ip addr add 10.10.10.1/24 dev wg0
+root@d663ac86effb:/# ip netns exec R1 ip link set wg0 up
+root@d663ac86effb:/# ip netns exec R2 ip link add dev wg0 type wireguard
+root@d663ac86effb:/# wg genkey | tee r2_private.key
+sOGBokFdSTWX1fPskQL/4I3rt8Q5MuFsKpsH27wMLVY=
+root@d663ac86effb:/# ip netns exec R2 wg set wg0 private-key r2_private.key
+root@d663ac86effb:/# ip netns exec R2 ip addr add 10.10.10.2/24 dev wg0
+root@d663ac86effb:/# ip netns exec R2 ip link set wg0 up
+root@d663ac86effb:/# ip netns exec R1 ip link show wg0
+5: wg0: <POINTOPOINT,NOARP,UP,LOWER_UP> mtu 1420 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/none 
+root@d663ac86effb:/# ip netns exec R2 ip link show wg0
+5: wg0: <POINTOPOINT,NOARP,UP,LOWER_UP> mtu 1420 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/none 
+root@d663ac86effb:/# cat r1_private.key | wg pubkey
+5e0voDEJKrCTkVPjW2506ioEiJcN9Pps8Je6BErHaWE=
+root@d663ac86effb:/# cat r2_private.key | wg pubkey
+O763RY+GBdo0L4bypIXV/kywWfsJ32d4dVcYjPbYr3U=
+root@d663ac86effb:/# ip netns exec R1 wg set wg0 peer O763RY+GBdo0L4bypIXV/kywWfsJ32d4dVcYjPbYr3U= endpoint 10.0.0.2:51820 allowed-ips 10.10.10.0/24
+root@d663ac86effb:/# ip netns exec R2 wg set wg0 peer 5e0voDEJKrCTkVPjW2506ioEiJcN9Pps8Je6BErHaWE= endpoint 10.0.0.1:51820 allowed-ips 10.10.10.0/24
+root@d663ac86effb:/# ip netns exec R1 wg
+interface: wg0
+  public key: 5e0voDEJKrCTkVPjW2506ioEiJcN9Pps8Je6BErHaWE=
+  private key: (hidden)
+  listening port: 44827
+
+peer: O763RY+GBdo0L4bypIXV/kywWfsJ32d4dVcYjPbYr3U=
+  endpoint: 10.0.0.2:51820
+  allowed ips: 10.10.10.0/24
+root@d663ac86effb:/# ip netns exec R1 ping 10.10.10.2
+PING 10.10.10.2 (10.10.10.2) 56(84) bytes of data.
+^X^C
+--- 10.10.10.2 ping statistics ---
+11 packets transmitted, 0 received, 100% packet loss, time 10223ms
+
+root@d663ac86effb:/# ip netns exec R2 wg
+interface: wg0
+  public key: O763RY+GBdo0L4bypIXV/kywWfsJ32d4dVcYjPbYr3U=
+  private key: (hidden)
+  listening port: 51217
+
+peer: 5e0voDEJKrCTkVPjW2506ioEiJcN9Pps8Je6BErHaWE=
+  endpoint: 10.0.0.1:51820
+  allowed ips: 10.10.10.0/24
+root@d663ac86effb:/# ip netns exec R2 wg set wg0 listen-port 51820
+root@d663ac86effb:/# ip netns exec R1 ping 10.10.10.2
+PING 10.10.10.2 (10.10.10.2) 56(84) bytes of data.
+64 bytes from 10.10.10.2: icmp_seq=1 ttl=64 time=0.459 ms
+64 bytes from 10.10.10.2: icmp_seq=2 ttl=64 time=0.444 ms
+64 bytes from 10.10.10.2: icmp_seq=3 ttl=64 time=0.247 ms
+^C
+--- 10.10.10.2 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2042ms
+rtt min/avg/max/mdev = 0.247/0.383/0.459/0.096 ms
+root@d663ac86effb:/# ip netns exec R2 ping 10.10.10.1
+PING 10.10.10.1 (10.10.10.1) 56(84) bytes of data.
+64 bytes from 10.10.10.1: icmp_seq=1 ttl=64 time=0.540 ms
+64 bytes from 10.10.10.1: icmp_seq=2 ttl=64 time=0.337 ms
+64 bytes from 10.10.10.1: icmp_seq=3 ttl=64 time=0.219 ms
+^C
+--- 10.10.10.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2058ms
+rtt min/avg/max/mdev = 0.219/0.365/0.540/0.132 ms
+root@d663ac86effb:/# 
+
