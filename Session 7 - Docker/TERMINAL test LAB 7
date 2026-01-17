@@ -1,1 +1,35 @@
+TERMINAL EXERCISE LAB 7 - DOCKER:
 
+BUILD THE IMAGE:
+docker build -t myserver .
+
+docker ps
+
+RUN THE DOCKER AND CHECK:
+docker run -d -p 8080:5001 --name my-running-app myserver 
+
+docker ps     
+
+TEST THE APP IN THE APP.PY FILE (JUST AN EXAMPLE OF DETERMINISTIC)
+curl -X POST http://localhost:8080/response/v1/resources \
+     -H "Content-Type: application/json" \
+     -d '{"distr": "deterministic", "params": {"fixed": 3}, "task": "cpu"}'
+
+FOR THE OPTIONAL PART:
+(I USE A NEW DOCKER TO CREATE SO I HAVE TO REMOVE THE PREVIOUS ONE):
+
+docker ps (to check the ID)
+docker stop <ID>
+docker rm <ID>
+
+I ENTER IN THE SITE AFTER THE FOLLOWING COMMAND:
+docker login
+(follow the link there)
+
+I BUILD THE NEW IMAGE:
+docker build -t myrestserver .   
+
+docker tag myrestserver semplicementeria/myrestserver:v1 
+docker push semplicementeria/myrestserver:v1
+
+docker run -p 8080:5001 semplicementeria/myrestserver:v1
