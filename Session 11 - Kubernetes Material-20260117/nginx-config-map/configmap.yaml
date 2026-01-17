@@ -1,16 +1,11 @@
+<!/modified>
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-config-index
-  labels:
-    app: nginx
+  name: rest-server-config
 data:
-  index.html: |
-    <html>
-      <head>
-        <title>Simple Nginx Webapp</title>
-      </head>
-      <body>
-        <h1>My New custom config</h1>
-      </body>
-    </html>
+  my_res.json: |
+    {
+      "resource1": "Valore Alpha",
+      "resource2": "Valore Beta"
+    }
