@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config-index
+  labels:
+    app: nginx
+data:
+  index.html: |
+    <html>
+      <head>
+        <title>Simple Nginx Webapp</title>
+      </head>
+      <body>
+        <h1>My New custom config</h1>
+      </body>
+    </html>
