@@ -1,0 +1,309 @@
+
+TERMINALE MULTIPASS VM: (da commentare, giù c'è anche il terminale per avviare tutto)
+
+Last login: Sat Jan 17 19:56:12 on ttys009
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+MacBookAir:~ mariapiabuonomo$ multipass launch --name k8s-node --cpus 2 --memory 4G
+launch failed: instance "k8s-node" already exists
+MacBookAir:~ mariapiabuonomo$ multipass shell k8s-node
+Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.8.0-90-generic aarch64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Sat Jan 17 21:19:56 CET 2026
+
+  System load:             0.92
+  Usage of /:              81.2% of 3.80GB
+  Memory usage:            18%
+  Swap usage:              0%
+  Processes:               122
+  Users logged in:         0
+  IPv4 address for enp0s1: 192.168.64.7
+  IPv6 address for enp0s1: fdb4:d35f:6cba:c225:5054:ff:fe11:187
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+58 updates can be applied immediately.
+31 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+Last login: Sat Jan 17 19:48:54 2026 from 192.168.64.1
+ubuntu@k8s-node:~$ sudo k0s kubectl delete deployment rest-server-dep
+deployment.apps "rest-server-dep" deleted from default namespace
+ubuntu@k8s-node:~$ ls
+k0s.config  my-configmap.yaml  my-deployment.yaml  my-service.yaml
+ubuntu@k8s-node:~$ sudo k0s kubectl apply -f my-deployment.yaml
+deployment.apps/rest-server-dep created
+ubuntu@k8s-node:~$ sudo k0s kubectl apply -f my-configmap.yaml
+configmap/rest-server-config unchanged
+ubuntu@k8s-node:~$ sudo k0s kubectl apply -f my-service.yaml 
+service/rest-server-svc unchanged
+ubuntu@k8s-node:~$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS    RESTARTS   AGE
+rest-server-dep-79bb7c7d98-flbqk   0/1     Pending   0          10s
+rest-server-dep-79bb7c7d98-gknpg   0/1     Error     0          31s
+^Cubuntu@k8s-node:~sudo k0s kubectl logs rest-server-dep-79bb7c7d98-gknpgpg
+unable to retrieve container logs for containerd://bc07e6736d9e60dd34dfebb403f3fbf1a1cc7db415d3a7abef44926adc159f00ubuntu@k8s-node:~$ sudo k0s kubectl delete deployment rest-servesudo k0s kubectl delete deployment rest-server-dep
+deployment.apps "rest-server-dep" deleted from default namespace
+ubuntu@k8s-node:~$ nano my-deployment.yaml
+ubuntu@k8s-node:~$ nano my-deployment.yaml
+ubuntu@k8s-node:~$ sudo k0s kubectl apply -f my-configmap.yaml
+sudo k0s kubectl apply -f my-deployment.yaml
+sudo k0s kubectl apply -f my-service.yaml
+configmap/rest-server-config unchanged
+deployment.apps/rest-server-dep created
+service/rest-server-svc unchanged
+ubuntu@k8s-node:~$ sudo k0s kubectl get pods
+NAME                               READY   STATUS    RESTARTS   AGE
+rest-server-dep-64cf9588bf-9kknz   0/1     Pending   0          7s
+ubuntu@k8s-node:~$ curl http://localhost:30080/response/v1/resources
+curl: (7) Failed to connect to localhost port 30080 after 0 ms: Couldn't connect to server
+ubuntu@k8s-node:~$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS    RESTARTS   AGE
+rest-server-dep-64cf9588bf-9kknz   0/1     Pending   0          56s
+^Cubuntu@k8s-node:~sudo k0s kubectl describe pod rest-server-dep-64cf9588bf-9kknznz
+Name:             rest-server-dep-64cf9588bf-9kknz
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             <none>
+Labels:           app=rest-server
+                  pod-template-hash=64cf9588bf
+Annotations:      <none>
+Status:           Pending
+IP:               
+IPs:              <none>
+Controlled By:    ReplicaSet/rest-server-dep-64cf9588bf
+Containers:
+  rest-server:
+    Image:        semplicementeria/rest-server:v2
+    Port:         5000/TCP
+    Host Port:    0/TCP
+    Environment:  <none>
+    Mounts:
+      /etc/my_res.json from config-volume (rw,path="my_res.json")
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-rqzt2 (ro)
+Conditions:
+  Type           Status
+  PodScheduled   False 
+Volumes:
+  config-volume:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      rest-server-config
+    Optional:  false
+  kube-api-access-rqzt2:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason            Age   From               Message
+  ----     ------            ----  ----               -------
+  Warning  FailedScheduling  108s  default-scheduler  0/1 nodes are available: 1 node(s) had untolerated taint(s). no new claims to deallocate, preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling.
+ubuntu@k8s-node:~$ sudo k0s kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+error: taint "node-role.kubernetes.io/control-plane" not found
+ubuntu@k8s-node:~$ sudo k0s kubectl taint nodes --all node-role.kubernetes.io/master-
+error: taint "node-role.kubernetes.io/master" not found
+ubuntu@k8s-node:~$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS    RESTARTS   AGE
+rest-server-dep-64cf9588bf-9kknz   0/1     Pending   0          2m58s
+^Cubuntu@k8s-node:~sudo k0s kubectl get nodeses
+NAME       STATUS   ROLES           AGE   VERSION
+k8s-node   Ready    control-plane   95m   v1.34.3+k0s
+ubuntu@k8s-node:~$ sudo k0s kubectl describe node k8s-node | grep Taints
+Taints:             node.kubernetes.io/disk-pressure:NoSchedule
+ubuntu@k8s-node:~$ sudo k0s kubectl taint nodes --all node-role.kubernetes.io/master-
+sudo k0s kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+error: taint "node-role.kubernetes.io/master" not found
+error: taint "node-role.kubernetes.io/control-plane" not found
+ubuntu@k8s-node:~$ sudo k0s kubectl taint nodes --all node-role.kubernetes.io/disk-pressure
+error: at least one taint update is required
+ubuntu@k8s-node:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           391M  1.6M  389M   1% /run
+efivarfs        256K   15K  242K   6% /sys/firmware/efi/efivars
+/dev/sda1       3.9G  3.4G  399M  90% /
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/sda16      891M   60M  769M   8% /boot
+/dev/sda15       98M  6.4M   92M   7% /boot/efi
+tmpfs           391M   12K  391M   1% /run/user/1000
+ubuntu@k8s-node:~$ multipass stop k8s-node
+Command 'multipass' not found, but can be installed with:
+sudo snap install multipass
+                                                                               
+Broadcast message from ubuntu@k8s-node (somewhere) (Sat Jan 17 21:32:51 2026): 
+                                                                               
+The system is going down for poweroff now
+                                                                               
+MacBookAir:~ mariapiabuonomo$ 00~multipass info k8s-node01~
+-bash: 00~multipass: command not found
+MacBookAir:~ mariapiabuonomo$ multipass info k8s-node01~
+info failed: The following errors occurred:
+instance "k8s-node01~" does not exist
+MacBookAir:~ mariapiabuonomo$ multipass info k8s-node
+Name:           k8s-node
+State:          Stopped
+Snapshots:      0
+IPv4:           --
+Release:        --
+Image hash:     a40713938d74 (Ubuntu 24.04 LTS)
+CPU(s):         --
+Load:           --
+Disk usage:     --
+Memory usage:   --
+Mounts:         --
+MacBookAir:~ mariapiabuonomo$ sudo ls /var/root/Library/Application\ Support/multipassd/vault/instances/k8s-node/
+Password:
+ls: /var/root/Library/Application Support/multipassd/vault/instances/k8s-node/: No such file or directory
+MacBookAir:~ mariapiabuonomo$ 00~sudo journalctl --vacuum-size=50M01~
+-bash: 00~sudo: command not found
+MacBookAir:~ mariapiabuonomo$ sudo journalctl --vacuum-size=50M
+sudo: journalctl: command not found
+MacBookAir:~ mariapiabuonomo$ 00~multipass delete k8s-node
+-bash: 00~multipass: command not found
+MacBookAir:~ mariapiabuonomo$ multipass purge
+MacBookAir:~ mariapiabuonomo$ multipass delete k8s-node
+MacBookAir:~ mariapiabuonomo$ multipass purge
+MacBookAir:~ mariapiabuonomo$ 00~multipass launch --name k8s-node --mem 4G --disk 20G01~
+-bash: 00~multipass: command not found
+MacBookAir:~ mariapiabuonomo$ multipass launch --name k8s-node --mem 4G --disk 20G
+Warning: the "--mem" long option is deprecated in favour of "--memory". Please update any scripts, etc.
+Launched: k8s-node
+MacBookAir:~ mariapiabuonomo$ multipass launch --name k8s-node --memory 4G --disk 20G
+launch failed: instance "k8s-node" already exists
+MacBookAir:~ mariapiabuonomo$ ls
+AndroidStudioProjects		JAVA				punti.txt
+Applications			lib				PycharmProjects
+bin				Library				readme_tesi.txt
+bk-deps				listino.txt			readme.txt
+change-install-names		loop.11373.tmp			RentedLog.txt
+config.log			Makefile			samples
+config.status			man				scapy_byindex_CLEAN.txt
+demos				Movies				shared-ld-sh
+Desktop				Music				src
+DockerFile			myfirstfiglet			tests
+Documents			NetBeansProjects		utils
+Downloads			network-automation		valori.txt
+Esercitazione1.qgz		octave-workspace		values.txt
+ESERCITAZIONE2ripresa.qgz	Pictures			valuesscapy.txt
+ESERCITAZIONEmia.qgz		projects			venduti.txt
+eth_byindex_CLEAN.txt		prova.txt			wx-config
+homebrew			Public
+MacBookAir:~ mariapiabuonomo$ multipass shell k8s-node
+Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.8.0-90-generic aarch64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Sat Jan 17 21:41:30 CET 2026
+
+  System load:             0.1
+  Usage of /:              10.8% of 18.33GB
+  Memory usage:            4%
+  Swap usage:              0%
+  Processes:               97
+  Users logged in:         0
+  IPv4 address for enp0s1: 192.168.64.8
+  IPv6 address for enp0s1: fdb4:d35f:6cba:c225:5054:ff:fe44:15f9
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+60 updates can be applied immediately.
+31 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
+
+ubuntu@k8s-node:~$ ls
+ubuntu@k8s-node:~$ nano my-configmap.yaml
+ubuntu@k8s-node:~$ nano my-deployment.yaml
+ubuntu@k8s-node:~$ nano my-service.yaml
+ubuntu@k8s-node:~$ sudo k0s kubectl apply -f my-configmap.yaml
+sudo k0s kubectl apply -f my-deployment.yaml
+sudo k0s kubectl apply -f my-service.yaml
+sudo: k0s: command not found
+sudo: k0s: command not found
+sudo: k0s: command not found
+ubuntu@k8s-node:~$ curl -sSf https://get.k0s.sh | sudo sh
+Downloading k0s from URL: https://github.com/k0sproject/k0s/releases/download/v1.34.3+k0s.0/k0s-v1.34.3+k0s.0-arm64
+k0s is now executable in /usr/local/bin
+You can use it to complete the installation of k0s on this node, 
+see https://docs.k0sproject.io/stable/install/ for more information.
+ubuntu@k8s-node:~$ sudo k0s kubectl apply -f my-configmap.yaml
+Error: cannot stat k0s kubeconfig, is the server running?: stat /var/lib/k0s/pki/admin.conf: no such file or directory
+ubuntu@k8s-node:~$ sudo k0s start
+Error: k0s has not been installed as a service
+ubuntu@k8s-node:~$ sudo k0s install controller --single
+ubuntu@k8s-node:~$ sudo k0s start
+ubuntu@k8s-node:~$ sudo k0s kubectl apply -f my-configmap.yaml
+configmap/rest-server-config created
+ubuntu@k8s-node:~$ sudo k0s kubectl apply -f my-deployment.yaml
+deployment.apps/rest-server-dep created
+ubuntu@k8s-node:~$ sudo k0s kubectl apply -f my-service.yaml
+service/rest-server-svc created
+ubuntu@k8s-node:~$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS    RESTARTS   AGE
+rest-server-dep-79bb7c7d98-v6fg2   0/1     Pending   0          18s
+rest-server-dep-79bb7c7d98-v6fg2   0/1     Pending   0          28s
+rest-server-dep-79bb7c7d98-v6fg2   0/1     ContainerCreating   0          28s
+rest-server-dep-79bb7c7d98-v6fg2   1/1     Running             0          61s
+^Cubuntu@k8s-node:~curl http://localhost:30080/response/v1/resourceses
+[{"distr":"deterministic","id":"018ff67f-6a82-4196-a757-fc4e3bdcc6c4","params":{"fixed":2},"task":"sleep"},{"distr":"uniform","id":"1459a554-a745-4548-8ec2-2001140d0fd6","params":{"T":5},"task":"cpu"}]
+ubuntu@k8s-node:~$ 
+
+
+TERMINALE PER FAR PARTIRE IL DOCKER
+Last login: Sat Jan 17 21:19:42 on ttys001
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+MacBookAir:~ mariapiabuonomo$ multipass stop k8s-node
+MacBookAir:~ mariapiabuonomo$ docker login
+Authenticating with existing credentials... [Username: semplicementeria]
+
+i Info → To login with a different account, run 'docker logout' followed by 'docker login'
+
+
+Login Succeeded
+MacBookAir:~ mariapiabuonomo$ docker restart
+docker: 'docker restart' requires at least 1 argument
+
+Usage:  docker restart [OPTIONS] CONTAINER [CONTAINER...]
+
+See 'docker restart --help' for more information
+MacBookAir:~ mariapiabuonomo$ docker push semplicementeria/rest-server:v1
+The push refers to repository [docker.io/semplicementeria/rest-server]
+ebfe7d4fa0c5: Layer already exists 
+e1c846804bcf: Layer already exists 
+55c86d8d7c8c: Already exists 
+a16e55119267: Layer already exists 
+1ed06b049c86: Layer already exists 
+c23f4b503473: Layer already exists 
+75c6fdac2875: Layer already exists 
+479b8ad8bcc3: Layer already exists 
+v1: digest: sha256:1151d7d58ea165c4249ed4ca8a4bfa73ef048eb74c3f5bf4d145b048a01ab67a size: 856
+MacBookAir:~ mariapiabuonomo$ 
