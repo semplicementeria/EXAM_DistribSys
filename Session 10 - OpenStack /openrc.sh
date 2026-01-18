@@ -1,0 +1,13 @@
+for key in $( set | awk '{FS="="} /^OS_/ {print $1}' ); do unset $key ; done
+export OS_PROJECT_DOMAIN_NAME='Default'
+export OS_USER_DOMAIN_NAME='Default'
+export OS_PROJECT_NAME='dist-sys-projectX'
+export OS_TENANT_NAME='dist-sys-projectX'
+export OS_USERNAME='dist-sys-userX'
+export OS_PASSWORD='openstack4DistSys'
+export OS_AUTH_URL='http://10.15.2.1:5000'
+export OS_INTERFACE='internal'
+export OS_ENDPOINT_TYPE='internalURL'
+export OS_IDENTITY_API_VERSION='3'
+export OS_REGION_NAME='RegionOne'
+export OS_AUTH_PLUGIN='password'
