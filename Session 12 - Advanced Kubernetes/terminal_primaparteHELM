@@ -1,0 +1,140 @@
+HO DOVUTO INSTALLARE UNA VERSIONE DI KUBERNETES ALTRIMENTI NON ANDAVA:
+
+ubuntu@k8s-node:~/advanced-kubernetes$ curl -sfL https://get.k3s.io | sh -
+[INFO]  Finding release for channel stable
+[INFO]  Using v1.34.3+k3s1 as release
+[INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.34.3+k3s1/sha256sum-arm64.txt
+[INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.34.3+k3s1/k3s-arm64
+[INFO]  Verifying binary download
+[INFO]  Installing k3s to /usr/local/bin/k3s
+[INFO]  Skipping installation of SELinux RPM
+[INFO]  Skipping /usr/local/bin/kubectl symlink to k3s, already exists
+[INFO]  Creating /usr/local/bin/crictl symlink to k3s
+[INFO]  Creating /usr/local/bin/ctr symlink to k3s
+[INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
+[INFO]  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
+[INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
+[INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
+[INFO]  systemd: Enabling k3s unit
+Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
+[INFO]  systemd: Starting k3s
+ubuntu@k8s-node:~/advanced-kubernetes$ mkdir -p ~/.kube
+
+QUI CI HO MESSO I PERMESSI NECESSARI
+# Copia il file di accesso e cambia i permessi
+sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+sudo chown ubuntu:ubuntu ~/.kube/config
+
+E HO CONTROLLATO CHE TUTTO FOSSE INSTALLATO CORRETTAMENTE:
+# Rimuovi eventuali variabili d'ambiente vecchie o errate
+unset KUBECONFIG
+ubuntu@k8s-node:~/advanced-kubernetes$ kubectl get nodes
+NAME       STATUS   ROLES           AGE   VERSION
+k8s-node   Ready    control-plane   9s    v1.34.3+k3s1
+
+ESERCIZO 1:
+ubuntu@k8s-node:~/advanced-kubernetes$ helm install ciao-app ./helm --set customText="ciao!" -n ciao-app --create-namespace
+NAME: ciao-app
+LAST DEPLOYED: Sun Jan 18 12:36:45 2026
+NAMESPACE: ciao-app
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+ubuntu@k8s-node:~/advanced-kubernetes$ helm install hello-app helm/ --set customText="hello!" -n hello-app --create-namespace
+NAME: hello-app
+LAST DEPLOYED: Sun Jan 18 12:37:42 2026
+NAMESPACE: hello-app
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+ubuntu@k8s-node:~/advanced-kubernetes$ kubectl get pods -n ciao-app
+kubectl get pods -n hello-app
+helm list -n ciao-app
+helm list -n hello-app
+NAME                        READY   STATUS              RESTARTS   AGE
+ciao-app-854f56985c-rhdt7   0/1     ContainerCreating   0          64s
+NAME                        READY   STATUS              RESTARTS   AGE
+hello-app-5ccf5d479-qs4tf   0/1     ContainerCreating   0          7s
+NAME    	NAMESPACE	REVISION	UPDATED                                	STATUS  	CHART             	APP VERSION
+ciao-app	ciao-app 	1       	2026-01-18 12:36:45.095269829 +0100 CET	deployed	simple-nginx-0.1.0	1.0        
+NAME     	NAMESPACE	REVISION	UPDATED                                	STATUS  	CHART             	APP VERSION
+hello-app	hello-app	1       	2026-01-18 12:37:42.330071688 +0100 CET	deployed	simple-nginx-0.1.0	1.0        
+ubuntu@k8s-node:~/advanced-kubernetes$ ciaoIP=$(kubectl get po -n ciao-app -o jsonpath="{.items[*].status.podIP}")
+curl $ciaoIP
+curl: try 'curl --help' or 'curl --manual' for more information
+ubuntu@k8s-node:~/advanced-kubernetes$ echo "L'IP del pod è: $ciaoIP"
+L'IP del pod è: 
+ubuntu@k8s-node:~/advanced-kubernetes$ kubectl get pods -n ciao-app
+NAME                        READY   STATUS    RESTARTS   AGE
+ciao-app-854f56985c-rhdt7   1/1     Running   0          2m16s
+ubuntu@k8s-node:~/advanced-kubernetes$ ciaoIP=$(kubectl get po -n ciao-app -o jsonpath="{.items[0].status.podIP}")
+curl -v http://$ciaoIP
+*   Trying 10.42.0.4:80...
+* Connected to 10.42.0.4 (10.42.0.4) port 80
+> GET / HTTP/1.1
+> Host: 10.42.0.4
+> User-Agent: curl/8.5.0
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+< Server: nginx/1.29.4
+< Date: Sun, 18 Jan 2026 11:39:07 GMT
+< Content-Type: text/html
+< Content-Length: 111
+< Last-Modified: Sun, 18 Jan 2026 11:36:45 GMT
+< Connection: keep-alive
+< ETag: "696cc5cd-6f"
+< Accept-Ranges: bytes
+< 
+<html>
+  <head>
+    <title>Simple Nginx Webapp</title>
+  </head>
+  <body>
+    <h1>ciao!</h1>
+  </body>
+</html>
+* Connection #0 to host 10.42.0.4 left intact
+ubuntu@k8s-node:~/advanced-kubernetes$ ciaoIP=$(kubectl get po -n ciao-app -o jsonpath="{.items[*].status.podIP}")
+ubuntu@k8s-node:~/advanced-kubernetes$ curl $ciaoIP
+<html>
+  <head>
+    <title>Simple Nginx Webapp</title>
+  </head>
+  <body>
+    <h1>ciao!</h1>
+  </body>
+</html>
+ubuntu@k8s-node:~/advanced-kubernetes$ helloIP=$(kubectl get po -n hello-app -o jsonpath="{.items[*].status.podIP}")
+curl $helloIP    
+<html>
+  <head>
+    <title>Simple Nginx Webapp</title>
+  </head>
+  <body>
+    <h1>hello!</h1>
+  </body>
+</html>
+
+BONUS:
+ubuntu@k8s-node:~/advanced-kubernetes$ helm install goodbye-app helm/ --set customPage="Goodbye!" --set customText="goodbye!" -n goodbye-app --create-namespace
+NAME: goodbye-app
+LAST DEPLOYED: Sun Jan 18 12:43:24 2026
+NAMESPACE: goodbye-app
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+ubuntu@k8s-node:~/advanced-kubernetes$ goodbyeIP=$(kubectl get po -n goodbye-app -o jsonpath="{.items[*].status.podIP}")
+curl $goodbyeIP
+<html>
+  <head>
+    <title>Simple Nginx Webapp</title>
+  </head>
+  <body>
+    <h1>goodbye!</h1>
+  </body>
+</html>
+ubuntu@k8s-node:~/advanced-kubernetes$ 
