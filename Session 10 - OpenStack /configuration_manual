@@ -1,0 +1,14 @@
+#cloud-config
+password: unibo
+chpasswd: { expire: False }
+ssh_pwauth: True
+
+write_files:
+  - path: /root/helloworld.txt
+    owner: root:root
+    permissions: '0644'
+    content: |
+      # My new helloworld file
+
+runcmd:
+  - [ sysctl, -w, net.ipv4.ip_forward=1 ]
