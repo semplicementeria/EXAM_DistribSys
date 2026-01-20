@@ -11,7 +11,7 @@ connection_times = []      # time elapsed between connection setups
 data_times = []            # time elapsed between data receptions
 lock = threading.Lock()    # to protect shared lists in threaded mode
 
-# defintion of the function for the iterative server (the user will select it by input)
+# Iterative server function (the client will select this if wanted)
 def TCPserverIterative(Server_address, Server_port, verbose=False):
 
     serverSocket = socket(AF_INET, SOCK_STREAM)
@@ -27,16 +27,16 @@ def TCPserverIterative(Server_address, Server_port, verbose=False):
         while True: 
             #we accept the new connection to the client 
             connectionSocket, addr = serverSocket.accept()
-            print("[+] New connection from " + addr[0] + ":" + str(addr[1])) #addr[0] corresponds to server address mentre addr[1] corresponds to the port transformed in a string 
+            print("[+] New connection from " + addr[0] + ":" + str(addr[1])) #addr[0] corresponds to the server address, while addr[1] corresponds to the port and all is transformed in a string 
 
             # Measure time between connections
             now = time.time() * 1000  # in milliseconds
             if last_connection_time is not None:
                 elapsed_ms = now - last_connection_time
                 connection_times.append(elapsed_ms)
-            last_connection_time = now
+            last_connection_time = now 
 
-            connectionSocket.send(b"Hello! You are connected to the server.") #confirmation from server
+            connectionSocket.send(b"Hello! You are connected to the server.") #confirmation from server (greeting at the client)
 
             last_data_time = None
 
@@ -81,7 +81,7 @@ def TCPserverIterative(Server_address, Server_port, verbose=False):
 # Handler per il client nella concurrency
 def HandleClient(conn, Client_address, Client_port, verbose=False):
 
-    #dedicated server as a print and various IDs of threads to which we refer (the primary and the secondary)
+    # Server and threads to which we refer (the parent one practically)
     print("[+] New server socket worker spawned for client " + Client_address + ":" + str(Client_port)) 
     print("Thread ID: " + str(get_native_id()) + " - PID: " + str(getpid()) + " - PPID: " + str(getppid()))
 
@@ -96,12 +96,13 @@ def HandleClient(conn, Client_address, Client_port, verbose=False):
             sentence_enc = conn.recv(1024)
             if not sentence_enc:
                 break
-            sentence = sentence_enc.decode(errors="replace") #praticamente uguale a prima con l'encode e il decode
+            sentence = sentence_enc.decode(errors="replace") # same as before but with the decode (specular from the pov of the client)
 
             # Measure time between data receptions
             now_data = time.time() * 1000  # milliseconds
             if last_data_time is not None:
                 elapsed_data_ms = now_data - last_data_time
+                
                 # Lock to safely append in threaded mode
                 with lock:
                     data_times.append(elapsed_data_ms)
@@ -145,7 +146,7 @@ def TCPserverConcurrency(Server_address, Server_port, Concurrency_mode, verbose=
             last_connection_time = now
 
             # Spawn a new worker to handle the incoming connection
-            if Concurrency_mode == "proc": #qui mi servirà infatti nel client il multiprocessing (dell'assignment 1 praticamente)
+            if Concurrency_mode == "proc": 
                 srv = multiprocessing.Process(target=HandleClient, args=(connectionSocket, addr[0], addr[1], verbose)) 
             elif Concurrency_mode == "thr":
                 srv = threading.Thread(target=HandleClient, args=(connectionSocket, addr[0], addr[1], verbose)) 
