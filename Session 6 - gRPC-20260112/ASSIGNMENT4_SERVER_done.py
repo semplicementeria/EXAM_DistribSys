@@ -50,19 +50,26 @@ class DistributionServiceServicer(ASSIGNMENT4_pb2_grpc.DistributionServiceServic
             message=f"Successfully simulated {distr} workload."
         )
 
+
+"""
+    Start the gRPC server and listen for client requests.
+    The server runs on port 50051 and handles multiple requests using a thread pool.
+    """
 def serve():
     # We use a ThreadPool to allow concurrent CPU task execution
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10)) #multi-threaded server
     ASSIGNMENT4_pb2_grpc.add_DistributionServiceServicer_to_server(
         DistributionServiceServicer(), server
     )
     
-    # Matching the port 50051 or 56000 as per your client tests
-    port = "50051" 
+    port = "50052" 
     server.add_insecure_port(f'[::]:{port}')
     print(f"gRPC Server started on port {port}")
     server.start()
-    server.wait_for_termination()
+    try:
+        server.wait_for_termination()
+    except KeyboardInterrupt:
+        print(f"The server has been closed.")
 
 if __name__ == '__main__':
     serve()
