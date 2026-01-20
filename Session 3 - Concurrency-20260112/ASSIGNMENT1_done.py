@@ -76,9 +76,9 @@ def compute_averages(output_file):
     with open(output_file, "r") as f:
         next(f)  # Skip header
         for line in f:
-            parts = line.strip().split(",")
-            if len(parts) == 2:
-                worker_id, ts = map(int, parts)
+            parts = line.strip().split(",") # here we remove the white spaces and we split the two parts with a comma, to save it in a "parts" variable
+            if len(parts) == 2: # if we have both the ts and W...
+                worker_id, ts = map(int, parts) # we transform the extracted data in an integer and assign them to the specific variables of the previous list
                 if worker_id not in timestamps:
                     timestamps[worker_id] = []
                 timestamps[worker_id].append(ts)
@@ -96,7 +96,7 @@ def compute_averages(output_file):
         
         if len(intervals) > 0:
             avg = np.mean(intervals)
-            total_intervals.extend(intervals)
+            total_intervals.extend(intervals) # global inter-event average computed by using "extend" that takes the element one by one and sum it together directly from the list
             print(f"Worker {worker_id}: Inter-event average = {avg:.2f} ms")
     
     if total_intervals:
@@ -121,7 +121,7 @@ if __name__ == "__main__":
         exit(1)
 
     # Initialize the lock for synchronization
-    lock = multiprocessing.Lock()
+    lock = multiprocessing.Lock() #lock for the multiprocessing
 
     with open(args.file, "w") as f:
         f.write("worker_id,timestamp_ms\n")
@@ -141,4 +141,3 @@ if __name__ == "__main__":
     compute_averages(args.file)
 
 # to try in the command line:
-# python ASSIGNMENT1_done.py --workers 4 --intervals 10 --dist u --param 2.0 --file output.txt --mode processes
