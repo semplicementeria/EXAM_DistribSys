@@ -12,21 +12,20 @@ def send_request(distr_type, param, server_address, verbose=False, thread_id=Non
     prefix = f"[Thread {thread_id}] " if thread_id is not None else ""
     
     try:
-        # Create a channel and a stub
+        # I create a channel and a stub
         with grpc.insecure_channel(server_address) as channel:
             stub = ASSIGNMENT4_pb2_grpc.DistributionServiceStub(channel)
 
             if verbose:
                 print(f"{prefix}Connecting to {server_address}...")
 
-            # Prepare the request message
-            # Note: Ensure these field names match your .proto definition
+            # we prepare the request message with the fields that have to be the same as the proto file
             request = ASSIGNMENT4_pb2.GenerateRequest(
                 distr_type=distr_type, 
                 parameter=param
             )
 
-            # Call the remote method
+            # here there's the call of the remote method
             start_time = time.time()
             response = stub.GenerateResponseTime(request)
             elapsed = time.time() - start_time
@@ -45,7 +44,7 @@ def main():
     parser.add_argument("--param", "-p", type=float, required=True,
                         help="Parameter: (fixed time for d, max interval T for u, lambda for e)")
     parser.add_argument("--server", "-s", type=str, default="localhost", help="Server IP (default: localhost)")
-    parser.add_argument("--port", "-P", type=int, default=50051, help="Server Port (default: 50051)")
+    parser.add_argument("--port", "-P", type=int, default=50052, help="Server Port (default: 50052)")
     parser.add_argument("--threads", "-t", type=int, default=1, help="Number of concurrent requests")
     parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose output")
     
