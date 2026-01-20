@@ -5,13 +5,14 @@ import argparse
 import socket
 
 # Function to generate N random intervals and send timestamps via Socket
-def task_sequence_socket(worker_id, distr, parameters, N, server_ip, server_port, verbose):
+def task_sequence_socket(worker_id, distr, parameters, N, server_ip, server_port, verbose): #verbose is a debbuging/monitoring boolean 
+    # variable to understand if the client has to be silent or to talk to the server (same also for the server)
     try:
         # Create a TCP stream socket
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect((server_ip, server_port))
         
-        # Optional: Receive initial greeting from server
+        # Receive initial message from server that tells "you're connected"
         greeting = client_socket.recv(1024).decode(errors="replace")
         if verbose:
             print(f"[Worker {worker_id}] Connected. Server says: {greeting.strip()}")
@@ -44,7 +45,7 @@ def task_sequence_socket(worker_id, distr, parameters, N, server_ip, server_port
             # Wait for echo/ack from server to maintain stream sync
             client_socket.recv(1024)
 
-        client_socket.close()
+        client_socket.close() #here the socket primitives finish
         if verbose:
             print(f"[Worker {worker_id}] Task completed and connection closed.")
 
@@ -57,8 +58,7 @@ def multithreading_workers(W, distr, parameters, N, server_ip, server_port, verb
     threads = []
     for i in range(W):
         # We pass worker_id i+1 to match your previous logic
-        t = threading.Thread(target=task_sequence_socket, 
-                             args=(i + 1, distr, parameters, N, server_ip, server_port, verbose))
+        t = threading.Thread(target=task_sequence_socket, args=(i + 1, distr, parameters, N, server_ip, server_port, verbose))
         threads.append(t)
         t.start()
     
