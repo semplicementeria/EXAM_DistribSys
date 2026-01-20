@@ -1,17 +1,13 @@
-'''Write the python code to run a Flask server exposing a REST API that allows the creation/modification/deletion 
-of resources offered by a "random response time" web application. Each resource must represent a generator of response times following a given random distribution, 
-with specified parameter(s), mimicking the diverse computation time of some web application server'''
-
-from flask import Flask, request, jsonify
-import time, uuid, random
+from flask import Flask, request, jsonify #json is a standard used in Python for the communications between server and client. More flexible wrt csv (used in the previous assignment with (worker_id, ts))
+#Flask is a lightweight web application framework that allows to quickly setup a web server or web applications in Python
+import time, uuid, random #uuid= universally unique identifiers. Different versions, most interesting is the 4th (Random). Adv and Disadv.
 import numpy as np
 
 #so we have a server that a user can use to create new random response time generators
-#here we initialize the Flask app:
-app = Flask(__name__)
 
-# I create a global storage for the generators
-generators = []
+app = Flask(__name__) #here we initialize the Flask app:
+
+generators = [] # in order to apply uuid 4 I need a sort of storage of the generators 
 
 #Creation of the source (POST)
 @app.route('/response/v1/resources', methods=['POST'])
@@ -20,15 +16,13 @@ def create_resource():
     if not request.is_json:
         return "request must be JSON\n", 415 #error for the unsupported media type
    
-   #now that we know it's JSON then we extract the data that has been requested: parsing of the JSON
+   #we extract the data that has been requested through parsing of the JSON
     data = request.get_json()
 
-   #then we extract the data and validate the fields that are our parameters we're interested into
     distr = data.get('distr')
     params = data.get('params')
     task = data.get('task')
 
-   #now here i put some other errors
     if not distr or not params or not task:
       return "Parameters not available", 400 #the resource exists but the input is wrong
    #I'll put the same error for the invalid distribution type and if the task is not in cpu or sleep
@@ -36,7 +30,7 @@ def create_resource():
     if distr not in ['exponential', 'deterministic', 'uniform']:
       return "Invalid distribution type\n", 400
    
-    if task not in ['cpu', 'sleep']:
+    if task not in ['cpu', 'sleep']: #sleep: it's waiting for something. cpu: there are some computations going on in the processor
       return "Invalid task type\n", 400
     
     #creation of the resource
@@ -49,13 +43,9 @@ def create_resource():
     }
 
     #we create a global list into which we can initialize our generators
-    generators.append(new_resource)
-
-    #every resource has to allocate memory in it so I have to create the following structure:
+    generators.append(new_resource)    
     
-    
-    #now I have to store them in a global list and append my new objects:
-    return jsonify(new_resource), 201
+    return jsonify(new_resource), 201 #201: request accepted
  
 #Then I have to repeat this step but for the GET part:
 @app.route('/response/v1/resources', methods=['GET'])
@@ -111,9 +101,8 @@ def run_resource(id):
             params = r["params"]
             task = r["task"]
 
-            # --- Generate random delay ---
             if distr == "deterministic":
-                interval = params.get("fixed", 1)
+                interval = params.get("fixed", 1) #generation of the interval of time
             elif distr == "uniform":
                 interval = np.random.uniform(0, params.get("T", 1))
             elif distr == "exponential":
@@ -146,18 +135,12 @@ def run_resource(id):
 
     return "Resource not found\n", 404
 
-#tests for the app.rout:
-@app.route("/")
-def welcome():
-    return "<h1>The random response time server is running!</h1>\n"
-
-@app.route("/test/")
-def test():
-    return "<h1>This is the test folder.</h1>\n"
-
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5001, debug=True)
 
+
+#cURL is a command line tool and library for transferring data with URLs to and from servers. 
+# It supports many application-layer protocols, including HTTP. Download files, Upload files, Interact with web servers
 
 # TEST: first we have to run the code to run the server in a terminal. In the other...
 '''
