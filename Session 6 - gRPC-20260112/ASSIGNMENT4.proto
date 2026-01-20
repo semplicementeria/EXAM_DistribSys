@@ -27,6 +27,6 @@ service DistributionService {
 // exponential: python3 ASSIGNMENT4_CLIENT_done.py -d e -p 0.5 -s localhost -v
 
 //multithreading:
-//python3 SSIGNMENT4_CLIENT_done.py -d d -p 3.0 -s localhost -t 5 -v
+//python3 ASSIGNMENT4_CLIENT_done.py -d d -p 3.0 -s localhost -t 5 -v
 
 // to see also if the system is robust to errors I could try to put a bad port or a -p very little like 0.00001
