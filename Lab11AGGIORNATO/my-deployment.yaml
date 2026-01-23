@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rest-server-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rest-server
+  template:
+    metadata:
+      labels:
+        app: rest-server
+    spec:
+      containers:
+      - name: rest-server
+        image: semplicementeria/rest-server:v2 # L'immagine creata al punto 2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/my_res.json # Percorso richiesto
+          subPath: my_res.json
+      volumes:
+      - name: config-volume
+        configMap:
+          name: rest-server-config
+
+
+
