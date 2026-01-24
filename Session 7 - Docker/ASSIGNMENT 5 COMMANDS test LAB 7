@@ -1,12 +1,18 @@
 TERMINAL EXERCISE LAB 7 - DOCKER:
 
 BUILD THE IMAGE:
-docker build -t myserver .
+docker build -t myserver . 
+(-t stands for a tag and "." is for the context: 
+"Docker, look for the DockerFile and all the necessary files in the current directory)
 
-docker ps
+docker ps 
 
 RUN THE DOCKER AND CHECK:
+I specify to open only one port and to make the port mapping with the conventional: "port-on-host:port-on-container"
 docker run -d -p 8080:5001 --name my-running-app myserver 
+(-d stands for detatched, to run in background)
+(otherwise I should have published all ports with -P or --publish-all in order to automatically configure the NAT of our machine)
+(in that case we make a container port available to everyone (Docker host address known in that case)
 
 docker ps     
 
@@ -21,6 +27,9 @@ FOR THE OPTIONAL PART:
 docker ps (to check the ID)
 docker stop <ID>
 docker rm <ID>
+(I also thought to use commit (that saves a container's file changes or settings into a new image, 
+but it's used only for debug emergencies such as a container that is failing.
+Once I can let it work I use commit to not let it fail again)
 
 I ENTER IN THE SITE AFTER THE FOLLOWING COMMAND:
 docker login
