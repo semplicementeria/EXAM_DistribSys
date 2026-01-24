@@ -1,5 +1,7 @@
 TERMINAL EXERCISE LAB 7 - DOCKER:
 
+(vai in VSC per app.py e il file di DOCKERFILE da spiegare per l'assignment 5)
+
 BUILD THE IMAGE:
 docker build -t myserver . 
 (-t stands for a tag and "." is for the context: 
