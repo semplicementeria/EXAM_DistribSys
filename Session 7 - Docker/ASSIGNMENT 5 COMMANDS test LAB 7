@@ -2,6 +2,8 @@ TERMINAL EXERCISE LAB 7 - DOCKER:
 
 (vai in VSC per app.py e il file di DOCKERFILE da spiegare per l'assignment 5)
 
+Check on the correct directory that contains the DockerFile (Desktop->esercizidistr)
+
 BUILD THE IMAGE:
 docker build -t myserver . 
 (-t stands for a tag and "." is for the context: 
@@ -22,6 +24,10 @@ TEST THE APP IN THE APP.PY FILE (JUST AN EXAMPLE OF DETERMINISTIC)
 curl -X POST http://localhost:8080/response/v1/resources \
      -H "Content-Type: application/json" \
      -d '{"distr": "deterministic", "params": {"fixed": 3}, "task": "cpu"}'
+
+To test it: terminal on MAC the above command and then check if everything went right:
+docker logs my-running-app
+The output will be with a POST and 201 code!
 
 FOR THE OPTIONAL PART:
 (I USE A NEW DOCKER TO CREATE SO I HAVE TO REMOVE THE PREVIOUS ONE):
