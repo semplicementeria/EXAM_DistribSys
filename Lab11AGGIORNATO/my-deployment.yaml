@@ -14,13 +14,13 @@ spec:
     spec:
       containers:
       - name: rest-server
-        image: semplicementeria/rest-server:v2 # L'immagine creata al punto 2
+        image: semplicementeria/rest-server:v2 # The image built in Docker
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
         volumeMounts:
         - name: config-volume
-          mountPath: /etc/my_res.json # Percorso richiesto
+          mountPath: /etc/my_res.json # Requested path
           subPath: my_res.json
       volumes:
       - name: config-volume
