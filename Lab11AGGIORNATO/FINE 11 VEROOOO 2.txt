@@ -1,0 +1,365 @@
+Last login: Sun Jan 25 22:05:44 on ttys000
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+Host-011:~ mariapiabuonomo$ RUN apt-get update && apt-get install -y \
+>     curl \
+>     && rm -rf /var/lib/apt/lists/*
+-bash: RUN: command not found
+Host-011:~ mariapiabuonomo$ docker system prune -a
+WARNING! This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all images without at least one container associated to them
+  - all build cache
+
+Are you sure you want to continue? [y/N] y
+Deleted Networks:
+network-automation_telco-net
+
+Deleted Images:
+untagged: exam:latest
+deleted: sha256:2efe668c8874f148380e5d4f5c68a307c90f7e1f089330fef91cd5090bc2886c
+deleted: sha256:caab29cc0e44dcd97acae5d24222e2b12519f8b573eb88296c4efc6f449b2e87
+untagged: figlet:latest
+deleted: sha256:bd7eeb54ef1d70b4f69ab3cce5208e9959f076322a55d0654f8b68ffa9595e99
+deleted: sha256:5c6839781762953d0c194f27ea56fa4107cfaa5b0d7322056c4d7619f3e5379f
+deleted: sha256:40b852c5f78249e716dc5d185506be9ef33bff12993e39c736feea9ac17c4c44
+untagged: nginx:latest
+deleted: sha256:1beed3ca46acebe9d3fb62e9067f03d05d5bfa97a00f30938a0a3580563272ad
+deleted: sha256:63a931a2f5772f57ed7537f19330ee231c0550d1fbb95ee24d0e0e3e849bae33
+untagged: yourusername/random-response-server:latest
+untagged: sha256:1d276fcf5006e16f40bc52ac1cc3e60372041e4b8e5c8d6a90060b5117f7130a
+deleted: sha256:1d276fcf5006e16f40bc52ac1cc3e60372041e4b8e5c8d6a90060b5117f7130a
+deleted: sha256:7f74057412541ff49aa067792982765394898136559bcfa4164f41fb5cce7fc2
+deleted: sha256:10706205a5babcaddc7a458f6182929390a3eefdb0570a47a38d2c57008fe584
+untagged: sha256:d3a3023c18923f83db94417920af3d16c5f9ed73c19a52ce5a142bafa39c1f40
+deleted: sha256:d3a3023c18923f83db94417920af3d16c5f9ed73c19a52ce5a142bafa39c1f40
+deleted: sha256:738db6914886a36f491cc4ba8d299bcf2306da3b1749bd00dc6c670ccd3acbfe
+deleted: sha256:f07ffd8f0f6a69685f35e33a126f859fa264e892d71c91361825ae5f2ea5d73d
+untagged: jpetazzo/clock:latest
+deleted: sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3
+deleted: sha256:d5353371e6d691247e2da6c14a989e35b2a8d52570c9a47735f084452377bbb4
+untagged: demo-app:local
+deleted: sha256:993e9bc1ce30ce95454a1c31864f4246a7643d2e261ecaab5bfc1e6a9be622f4
+deleted: sha256:93ad4ea19cdc7874f6c8bcacf8e457b5e7238a3c8eb98f43110601382f635b6f
+deleted: sha256:914766f8030e1093d499c4b8dc872e26d572c67a996086ce81deb6bce19e6421
+untagged: myfirstfiglet:latest
+deleted: sha256:65db56365f9ef59b0753c26a5d916efa345e15e867fe087bfb5fd547c31152e0
+untagged: ubuntu:latest
+untagged: semplicementeria/rest-server:v1
+deleted: sha256:45eb150fa3ba1d8911fa8ddbcd0280a9ba6dae9e03f16b809345d653634d767b
+deleted: sha256:3cfc1b925b9ee39bdc7d0c418c3aedc9d83d103e6a40d955f242bbffb4b1639a
+untagged: busybox:latest
+deleted: sha256:e3652a00a2fabd16ce889f0aa32c38eec347b997e73bd09e69c962ec7f8732ee
+deleted: sha256:396fa78f221c72de93053a00e33e3d69b5bdfa80131777e6ea518eb9a1af3f3b
+untagged: hello-operator:local
+deleted: sha256:716ff912bc8f6192411326d77dc6b5ff6a98fbf34b928eb0cf3473549332741c
+deleted: sha256:73ad94af29acc00df0a2d7caf0ec68a93876ef9418478dc1c7e66441d3f9e26d
+deleted: sha256:9132eef036094260e304f1b86a37d5b0e93de20a9ff0cf4a402db1e2cce5e97d
+untagged: random-response-server:latest
+deleted: sha256:be8241a21c5380b2c99dd59b2e419a8099785e2e79073f360f698e9d46b45d63
+deleted: sha256:9f4afdc0fe51aac0e6bc259d42d415a6198095dcb896c400924575044f7d0ec6
+deleted: sha256:6f1b9cfc9f5bb85b5394bc06d7b74d61cad1f786949a501002f80710aec6b397
+untagged: mariapiabuonomo/rest-server:v1
+deleted: sha256:e958b9fba891fc6304ba045034bfd53d58d3f604fd8d6277f85ba6a6cc9e54ea
+deleted: sha256:10cb5556d7a0c51918988439af08f9df299daadd9effb7d1ab37c0e3541f0ae5
+deleted: sha256:a1ea027f3e6d20deb7d1c9755d45f3810257b8c9f09a992425fc24289284317d
+untagged: semplicementeria/hello-operator:0.1.0-arm64
+deleted: sha256:6dfa1b1241615130cf07f957d847158595362b55f667bae88920f874fb56d73d
+deleted: sha256:5337583bb0d45eb20b138e9f212e77d65ae4ab41e5ac6f1e47b491e93d01d639
+deleted: sha256:ec4ef0f47e6897fd823e5b2d068169c84a4dc9ccc613935025e49ed1936443bf
+untagged: semplicementeria/rest-server:v2
+deleted: sha256:ccb2560f468412f28932f7ca08914765087ecb73e4c98f8e11308d84b1171cd4
+deleted: sha256:e0331a9415ce262451b6b7f3e5679551e0092fa4e6f7570ed9d08399039b5b01
+deleted: sha256:8badcd7b195a3bf80711d2b20c55ad243bcda71fa7124e376099eb5a9b04f286
+untagged: ghcr.io/notconf/notconf:14265929521
+deleted: sha256:8fea980b050e74196b8252b9525be18c07e8b9bceb6033f63b4be52336bbf822
+deleted: sha256:359a696e7742a5000773a4cf16c307ad4bc3d4cce62ffe6f55a49b4897e871d1
+
+Deleted build cache objects:
+k8u6arq139vmb9ek2ivejpm0z
+e4y995slqd8xkx3tn4ebz878y
+x4vyvfkzo2urk3ye6jzyoxe0s
+57mn2q9j8eee5wv9dd113tvrs
+736xbc1edxs9xh0wkswu3zcgt
+yq0lal69xtexcj63ci299i8si
+9iymg76r8qhmsqnfmqb9jgsce
+snsx3pi333im49gmsabtpgy4t
+tccw9cnbt8uqpzjfo5lsthieg
+swdxpkkmlifi1ws8opowhuytd
+wxab2y52ouds9tble0il0sy0g
+djobhu5tlb8a4pmv80s3ul47y
+o4ichuifdhsf5cugzwf99b51r
+xrcjz1dl4wwkumc0ri10b3q7q
+oq8byhq0aza9h3qcczp4bb6zw
+nyqdf8jbo10fs8fs6oodum48t
+j75lqr19def0c73dgr6aqqui6
+kytkhy86hfsgv3mbkj3n8nzrd
+qzw4c8gqanp68ym5q8d6xz0ve
+9obnffsujtr22yb152dql11nv
+5fdnkdplt52l3n11hizsedh3n
+i43n7761za7qona3xwti64ldm
+oloih0q9nb5wz9qjwgjachksv
+p9xmec48zednmuq3qoz1ntf9d
+6l7l3o9ey4ov6dydhe3pp95le
+laky1tn8gytec0y75stcve3jd
+q7ruzmkqmzzncgojn843e0c7t
+xmlb5xfnaedacfqzs4lfonag7
+pb340rtbod7qkfhrbdzrff79v
+wf6unw9k8hvummm85rjdmnmsq
+s8sv5devrzcbqid4f0jgn5ty5
+cbrm72syfto8e7xvhohsksie3
+tzzuo3aevdvbtmddxr95ao851
+rre1q4o5nhpdrsqdqh0o7e8ck
+d0hfsuomhfzndxw11bxz75ca2
+pmhwrm35wpk3xea5sm539rt1a
+thlzatdjf23oikaco5ci6vd89
+8bo04954v50etddpwkuu24xrl
+mzpn6207w9vb15qez3bs1rieb
+zqvl5g428s1w5rx66sk6c73cr
+mcm4amuuga80c6zufkejt3h81
+8xri9rxgp50paq144sohvljsg
+sgjbqzrvkcsq7ogh8dftkiz99
+086updi1abzqoytm3jzv0st4r
+6d51d0c51sk8ql2duapqlr7xa
+fou80pep58sjpi07nokfh85xq
+raqtkh6j5zaotsv2zkl6qtet1
+8q5ne9vdpunydpsg88t6hlg0n
+mahdfbsvebptdrx304iyva2dn
+v9bqgiw0h8stytdzd4jimzhf5
+vzz7ovnnk76e4epkl25qr5ndu
+z7cb60uookuhapevpvicvmvkb
+xvvxmd99om681149uy6ggt29s
+to6iajt3canzdodp102gsgeq9
+kz2sd6wu172ta43dfuihsua7q
+unmx1fz3nhq908n0higsf444o
+rrrop3xtr4tyzu7870vf5rn0x
+zn7o9uoe194ce3idj5d3y8d5x
+y97ilhbifhj0uhceelxc6uxfw
+echhmzs3s84evsn6j463mb36p
+wmiirc1k5g59dfm4u7n6ia1s5
+wb19x5jxdfy1rhtsp863a4rfw
+v4nripmizdamxkb4ltu4kzlal
+
+Total reclaimed space: 10.11GB
+Host-011:~ mariapiabuonomo$ cd
+Host-011:~ mariapiabuonomo$ ls
+AndroidStudioProjects		Music
+Applications			myfirstfiglet
+bin				NetBeansProjects
+bk-deps				network-automation
+change-install-names		octave-workspace
+config.log			Pictures
+config.status			projects
+demos				prova.txt
+Desktop				Public
+DockerFile			punti.txt
+Documents			PycharmProjects
+Downloads			readme_tesi.txt
+Esercitazione1.qgz		readme.txt
+ESERCITAZIONE2ripresa.qgz	RentedLog.txt
+ESERCITAZIONEmia.qgz		samples
+eth_byindex_CLEAN.txt		scapy_byindex_CLEAN.txt
+homebrew			shared-ld-sh
+JAVA				src
+lib				tests
+Library				utils
+listino.txt			valori.txt
+loop.11373.tmp			values.txt
+Makefile			valuesscapy.txt
+man				venduti.txt
+Movies				wx-config
+Host-011:~ mariapiabuonomo$ cd D
+-bash: cd: D: No such file or directory
+Host-011:~ mariapiabuonomo$ cd Desktop/
+Host-011:Desktop mariapiabuonomo$ cd esercizidistr/
+Host-011:esercizidistr mariapiabuonomo$ cls
+-bash: cls: command not found
+Host-011:esercizidistr mariapiabuonomo$ ls
+__pycache__			ASSIGNMENT4_SERVER_done.py
+advanced-kubernetes		ASSIGNMENT4.proto
+app.py				Dockerfile
+ASSIGNMENT1_done.py		e02_done.py
+ASSIGNMENT10_done.py		LAB11_assignment
+ASSIGNMENT2_CLIENT_done.py	network-automation
+ASSIGNMENT2_SERVER_done.py	prova.py
+ASSIGNMENT3_done.py		requirements.txt
+ASSIGNMENT4_CLIENT_done.py
+Host-011:esercizidistr mariapiabuonomo$ cd LAB11_assignment/
+Host-011:LAB11_assignment mariapiabuonomo$ ls
+app.py			Dockerfile		my-service.yaml
+configmap.yaml		my-deployment.yaml
+Host-011:LAB11_assignment mariapiabuonomo$ docker login
+Authenticating with existing credentials... [Username: semplicementeria]
+
+i Info → To login with a different account, run 'docker logout' followed by 'docker login'
+
+
+Login Succeeded
+Host-011:LAB11_assignment mariapiabuonomo$ docker build -t semplicementeria/rest-server:v1 .
+[+] Building 93.3s (6/8)                                   docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 137B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.9-slim         3.3s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/4] FROM docker.io/library/python:3.9-slim@sha256:2d97f6910b16bd33  89.9s
+ => => resolve docker.io/library/python:3.9-slim@sha256:2d97f6910b16bd338  0.0s
+ => => sha256:c23f4b50347300e01a1a1da6dd0266adcf8e44671002ad2 251B / 251B  0.7s
+ => => sha256:ebfe7d4fa0c501a81a5ba6d1e1e2958e4b005d3ce 7.34MB / 13.83MB  89.9s
+ => => sha256:479b8ad8bcc3edbeba82d4959dfbdc65226d5b55df 1.27MB / 1.27MB  42.5s
+ => => sha256:a16e551192670581ec8359c70ab9eebf8f2af546 16.78MB / 30.14MB  89.9s
+ => [internal] load build context                                          0.0s
+ => => transferring context: 2.76kB                                        0.0s
+ => CANCELED [2/4] WORKDIR /app                                            0.0s
+ERROR: failed to build: failed to solve: Canceled: context canceled
+Host-011:LAB11_assignment mariapiabuonomo$ docker images
+                                                            i Info →   U  In Use
+IMAGE   ID             DISK USAGE   CONTENT SIZE   EXTRA
+Host-011:LAB11_assignment mariapiabuonomo$ docker image ls --format "table {{.Repository}}:{{.Tag}}\t{{.Size}}"
+REPOSITORY:TAG   SIZE
+Host-011:LAB11_assignment mariapiabuonomo$ docker history semplicementeria/rest-server:v1
+Error response from daemon: No such image: semplicementeria/rest-server:v1
+Host-011:LAB11_assignment mariapiabuonomo$ docker build -t semplicementeria/rest-server:v1 .
+[+] Building 15.3s (3/3) FINISHED                          docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 137B                                       0.0s
+ => ERROR [internal] load metadata for docker.io/library/python:3.9-slim  15.2s
+ => [auth] library/python:pull token for registry-1.docker.io              0.0s
+------
+ > [internal] load metadata for docker.io/library/python:3.9-slim:
+------
+Dockerfile:1
+--------------------
+   1 | >>> FROM python:3.9-slim
+   2 |     WORKDIR /app
+   3 |     RUN pip install flask numpy
+--------------------
+ERROR: failed to build: failed to solve: python:3.9-slim: failed to resolve source metadata for docker.io/library/python:3.9-slim: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.9-slim": net/http: TLS handshake timeout
+Host-011:LAB11_assignment mariapiabuonomo$ docker build -t semplicementeria/rest-server:v1 .
+[+] Building 250.2s (9/9) FINISHED                         docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 137B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.9-slim         5.3s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/4] FROM docker.io/library/python:3.9-slim@sha256:2d97f6910b16bd33  48.0s
+ => => resolve docker.io/library/python:3.9-slim@sha256:2d97f6910b16bd338  0.0s
+ => => sha256:ebfe7d4fa0c501a81a5ba6d1e1e2958e4b005d3c 13.83MB / 13.83MB  44.6s
+ => => sha256:a16e551192670581ec8359c70ab9eebf8f2af546 30.14MB / 30.14MB  47.2s
+ => => extracting sha256:a16e551192670581ec8359c70ab9eebf8f2af5468ffc79b3  0.5s
+ => => extracting sha256:479b8ad8bcc3edbeba82d4959dfbdc65226d5b55df3f3691  0.0s
+ => => extracting sha256:ebfe7d4fa0c501a81a5ba6d1e1e2958e4b005d3ce3827b0a  0.2s
+ => => extracting sha256:c23f4b50347300e01a1a1da6dd0266adcf8e44671002ad28  0.0s
+ => [internal] load build context                                          0.0s
+ => => transferring context: 28B                                           0.0s
+ => [2/4] WORKDIR /app                                                     0.1s
+ => [3/4] RUN pip install flask numpy                                    194.3s
+ => [4/4] COPY app.py .                                                    0.0s 
+ => exporting to image                                                     2.3s 
+ => => exporting layers                                                    1.9s 
+ => => exporting manifest sha256:21ec4c5d8f8573536b8bad85cc9e6ce24a1ed74f  0.0s 
+ => => exporting config sha256:5cb2f849742561f8f0d940e6e6dbc43f864a9c4dcd  0.0s 
+ => => exporting attestation manifest sha256:e833e67d6eb2ff9f60e44da3ed51  0.0s
+ => => exporting manifest list sha256:42f361de539a6b91c041bda28c8fc6b9d97  0.0s
+ => => naming to docker.io/semplicementeria/rest-server:v1                 0.0s
+ => => unpacking to docker.io/semplicementeria/rest-server:v1              0.4s
+Host-011:LAB11_assignment mariapiabuonomo$ docker push semplicementeria/rest-server:v1
+The push refers to repository [docker.io/semplicementeria/rest-server]
+c7b828c1e2aa: Pushed 
+ebfe7d4fa0c5: Layer already exists 
+c23f4b503473: Layer already exists 
+9780716eac04: Pushed 
+a16e55119267: Layer already exists 
+8f0af02070cf: Pushed 
+cb42ac61b1ec: Pushed 
+479b8ad8bcc3: Layer already exists 
+v1: digest: sha256:42f361de539a6b91c041bda28c8fc6b9d9776bd598a6ceba9d985a4dc864bc87 size: 856
+Host-011:LAB11_assignment mariapiabuonomo$ docker build --no-cache -t nome-immagine .
+[+] Building 154.4s (10/10) FINISHED                       docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 137B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.9-slim         1.7s
+ => [auth] library/python:pull token for registry-1.docker.io              0.0s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/4] FROM docker.io/library/python:3.9-slim@sha256:2d97f6910b16bd338  0.0s
+ => => resolve docker.io/library/python:3.9-slim@sha256:2d97f6910b16bd338  0.0s
+ => [internal] load build context                                          0.0s
+ => => transferring context: 28B                                           0.0s
+ => CACHED [2/4] WORKDIR /app                                              0.0s
+ => [3/4] RUN pip install flask numpy                                    149.9s
+ => [4/4] COPY app.py .                                                    0.0s 
+ => exporting to image                                                     2.7s 
+ => => exporting layers                                                    2.2s 
+ => => exporting manifest sha256:e00c7fe88ccf1b473e7cb5ee4f24df87ccfbe9f4  0.0s 
+ => => exporting config sha256:aef8a4d2b6046e931a9d9669f08460254523866da9  0.0s 
+ => => exporting attestation manifest sha256:6096a2a65efd3020e850876908c7  0.0s 
+ => => exporting manifest list sha256:8b098427e4e16751edaa893b8a9e0990f59  0.0s
+ => => naming to docker.io/library/nome-immagine:latest                    0.0s
+ => => unpacking to docker.io/library/nome-immagine:latest                 0.4s
+Host-011:LAB11_assignment mariapiabuonomo$ nano app.py
+Host-011:LAB11_assignment mariapiabuonomo$ docker push semplicementeria/rest-server:v1
+The push refers to repository [docker.io/semplicementeria/rest-server]
+c23f4b503473: Layer already exists 
+479b8ad8bcc3: Layer already exists 
+ebfe7d4fa0c5: Layer already exists 
+9780716eac04: Layer already exists 
+8f0af02070cf: Layer already exists 
+cb42ac61b1ec: Already exists 
+a16e55119267: Layer already exists 
+c7b828c1e2aa: Layer already exists 
+v1: digest: sha256:42f361de539a6b91c041bda28c8fc6b9d9776bd598a6ceba9d985a4dc864bc87 size: 856
+Host-011:LAB11_assignment mariapiabuonomo$ docker build -t semplicementeria/rest-server:v2 .
+[+] Building 11.0s (3/3) FINISHED                          docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 137B                                       0.0s
+ => ERROR [internal] load metadata for docker.io/library/python:3.9-slim  10.9s
+ => [auth] library/python:pull token for registry-1.docker.io              0.0s
+------
+ > [internal] load metadata for docker.io/library/python:3.9-slim:
+------
+Dockerfile:1
+--------------------
+   1 | >>> FROM python:3.9-slim
+   2 |     WORKDIR /app
+   3 |     RUN pip install flask numpy
+--------------------
+ERROR: failed to build: failed to solve: failed to fetch oauth token: Post "https://auth.docker.io/token": net/http: TLS handshake timeout
+Host-011:LAB11_assignment mariapiabuonomo$ docker build -t semplicementeria/rest-server:v2 .
+[+] Building 10.7s (10/10) FINISHED                        docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 137B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.9-slim        10.6s
+ => [auth] library/python:pull token for registry-1.docker.io              0.0s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/4] FROM docker.io/library/python:3.9-slim@sha256:2d97f6910b16bd338  0.0s
+ => => resolve docker.io/library/python:3.9-slim@sha256:2d97f6910b16bd338  0.0s
+ => [internal] load build context                                          0.0s
+ => => transferring context: 2.76kB                                        0.0s
+ => CACHED [2/4] WORKDIR /app                                              0.0s
+ => CACHED [3/4] RUN pip install flask numpy                               0.0s
+ => [4/4] COPY app.py .                                                    0.0s
+ => exporting to image                                                     0.1s
+ => => exporting layers                                                    0.0s
+ => => exporting manifest sha256:8fca5f0f08983aa86355b58bc7441458d3c44fe8  0.0s
+ => => exporting config sha256:ef95bca1a1059b8d604dfe84b351eb3c29b23fb1df  0.0s
+ => => exporting attestation manifest sha256:c619476a4271be6d54d73f2d2600  0.0s
+ => => exporting manifest list sha256:a608cf1c152d68db4d33394af65025db76d  0.0s
+ => => naming to docker.io/semplicementeria/rest-server:v2                 0.0s
+ => => unpacking to docker.io/semplicementeria/rest-server:v2              0.0s
+Host-011:LAB11_assignment mariapiabuonomo$ docker push semplicementeria/rest-server:v2
+The push refers to repository [docker.io/semplicementeria/rest-server]
+ebfe7d4fa0c5: Layer already exists 
+c23f4b503473: Layer already exists 
+a16e55119267: Layer already exists 
+9780716eac04: Layer already exists 
+479b8ad8bcc3: Layer already exists 
+9a7f22bfaa2b: Pushed 
+7d3594a09927: Pushed 
+435ead3927aa: Pushed 
+v2: digest: sha256:a608cf1c152d68db4d33394af65025db76d4b206e6e89c2b8fbb0e5d6e0f24bb size: 856
+Host-011:LAB11_assignment mariapiabuonomo$ 
