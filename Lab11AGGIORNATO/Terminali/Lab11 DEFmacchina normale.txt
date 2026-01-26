@@ -1,0 +1,456 @@
+Last login: Sun Jan 25 16:40:56 on ttys002
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+Host-006:~ mariapiabuonomo$ sudo docker build -t semplicementeria/rest-server:v1 .
+Password:
+Sorry, try again.
+Password:
+[+] Building 0.1s (1/1) FINISHED                           docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 2B                                         0.0s
+ERROR: failed to build: failed to solve: failed to read dockerfile: open Dockerfile: no such file or directory
+Host-006:~ mariapiabuonomo$ cd Desktop/esercizidistr/
+Host-006:esercizidistr mariapiabuonomo$ sudo docker build -t semplicementeria/rest-server:v1 .
+[+] Building 6.2s (11/11) FINISHED                         docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 952B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.11-slim        3.7s
+ => [auth] library/python:pull token for registry-1.docker.io              0.0s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/5] FROM docker.io/library/python:3.11-slim@sha256:5be45dbade29bebd  0.0s
+ => => resolve docker.io/library/python:3.11-slim@sha256:5be45dbade29bebd  0.0s
+ => [internal] load build context                                          2.2s
+ => => transferring context: 6.83MB                                        2.0s
+ => CACHED [2/5] WORKDIR /app                                              0.0s
+ => CACHED [3/5] COPY requirements.txt .                                   0.0s
+ => CACHED [4/5] RUN pip install --no-cache-dir -r requirements.txt        0.0s
+ => CACHED [5/5] COPY . .                                                  0.0s
+ => exporting to image                                                     0.1s
+ => => exporting layers                                                    0.0s
+ => => exporting manifest sha256:4bd5163cdbbe1a0cc2224616b000c190d7e59cdc  0.0s
+ => => exporting config sha256:ee8103a899656677a5540d56048543bf8721561db5  0.0s
+ => => exporting attestation manifest sha256:25261828a7141bc1da844f33bdf0  0.0s
+ => => exporting manifest list sha256:8f88df5e2a3a1212b9059d83b2d27c0abf9  0.0s
+ => => naming to docker.io/semplicementeria/rest-server:v1                 0.0s
+ => => unpacking to docker.io/semplicementeria/rest-server:v1              0.0s
+Host-006:esercizidistr mariapiabuonomo$ docker push semplicementeria/rest-server:v1
+The push refers to repository [docker.io/semplicementeria/rest-server]
+ac2e4ef91050: Layer already exists 
+878ef0ae99d6: Layer already exists 
+dda086c62cf2: Layer already exists 
+d637807aba98: Layer already exists 
+a966ad557385: Pushed 
+1b9fe51c57f9: Layer already exists 
+518abaec573a: Layer already exists 
+d67bedf18e0a: Layer already exists 
+068949646e5a: Layer already exists 
+v1: digest: sha256:8f88df5e2a3a1212b9059d83b2d27c0abf9836114b01e8bf0eb5d260d1ff7368 size: 856
+Host-006:esercizidistr mariapiabuonomo$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+Host-006:esercizidistr mariapiabuonomo$ sudo docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+Host-006:esercizidistr mariapiabuonomo$ docker run -d -p 8080:5000 semplicementeria/rest-server:v1
+ea0d097fa006cc8edfb120cc35d2da52ffb8dd3acd751dfebd170e6138e05225
+Host-006:esercizidistr mariapiabuonomo$ sudo docker ps
+CONTAINER ID   IMAGE                             COMMAND           CREATED         STATUS         PORTS                                         NAMES
+ea0d097fa006   semplicementeria/rest-server:v1   "python app.py"   4 seconds ago   Up 3 seconds   0.0.0.0:8080->5000/tcp, [::]:8080->5000/tcp   boring_thompson
+Host-006:esercizidistr mariapiabuonomo$ sudo docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+Host-006:esercizidistr mariapiabuonomo$ docker run -d -p 8080:5001 semplicementeria/rest-server:v1
+42b8e8286c596552e319e321ce0840c57a14afdf8ebc9c973464e32532305205
+Host-006:esercizidistr mariapiabuonomo$ docker stop-d -p 8080:5001 semplicementeria/rest-server:v1
+unknown shorthand flag: 'p' in -p
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+Host-006:esercizidistr mariapiabuonomo$ docker stop -d -p 8080:5001 semplicementeria/rest-server:v1
+unknown shorthand flag: 'd' in -d
+
+Usage:  docker stop [OPTIONS] CONTAINER [CONTAINER...]
+
+Run 'docker stop --help' for more information
+Host-006:esercizidistr mariapiabuonomo$ docker ps
+CONTAINER ID   IMAGE                             COMMAND           CREATED         STATUS         PORTS                                         NAMES
+42b8e8286c59   semplicementeria/rest-server:v1   "python app.py"   7 minutes ago   Up 7 minutes   0.0.0.0:8080->5001/tcp, [::]:8080->5001/tcp   fervent_murdock
+Host-006:esercizidistr mariapiabuonomo$ docker stop 42b8e8286c59
+42b8e8286c59
+Host-006:esercizidistr mariapiabuonomo$ docker rm 42b8e8286c59
+42b8e8286c59
+Host-006:esercizidistr mariapiabuonomo$ sudo docker build -t semplicementeria/rest-server:v2 .
+Password:
+[+] Building 3.9s (11/11) FINISHED                         docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 952B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.11-slim        1.5s
+ => [auth] library/python:pull token for registry-1.docker.io              0.0s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/5] FROM docker.io/library/python:3.11-slim@sha256:5be45dbade29bebd  0.0s
+ => => resolve docker.io/library/python:3.11-slim@sha256:5be45dbade29bebd  0.0s
+ => [internal] load build context                                          2.2s
+ => => transferring context: 6.83MB                                        2.0s
+ => CACHED [2/5] WORKDIR /app                                              0.0s
+ => CACHED [3/5] COPY requirements.txt .                                   0.0s
+ => CACHED [4/5] RUN pip install --no-cache-dir -r requirements.txt        0.0s
+ => CACHED [5/5] COPY . .                                                  0.0s
+ => exporting to image                                                     0.1s
+ => => exporting layers                                                    0.0s
+ => => exporting manifest sha256:4bd5163cdbbe1a0cc2224616b000c190d7e59cdc  0.0s
+ => => exporting config sha256:ee8103a899656677a5540d56048543bf8721561db5  0.0s
+ => => exporting attestation manifest sha256:87042b8fc967ad82d6f44d27d30d  0.0s
+ => => exporting manifest list sha256:d80f7e709e119c02731f641dfeeb9422e89  0.0s
+ => => naming to docker.io/semplicementeria/rest-server:v2                 0.0s
+ => => unpacking to docker.io/semplicementeria/rest-server:v2              0.0s
+Host-006:esercizidistr mariapiabuonomo$ docker push semplicementeria/rest-server:v2
+The push refers to repository [docker.io/semplicementeria/rest-server]
+d67bedf18e0a: Layer already exists 
+672b543d79d2: Pushed 
+068949646e5a: Layer already exists 
+1b9fe51c57f9: Layer already exists 
+878ef0ae99d6: Layer already exists 
+dda086c62cf2: Layer already exists 
+ac2e4ef91050: Layer already exists 
+518abaec573a: Layer already exists 
+d637807aba98: Layer already exists 
+v2: digest: sha256:d80f7e709e119c02731f641dfeeb9422e891754ad3b06dabca9742a7d75e92cd size: 856
+Host-006:esercizidistr mariapiabuonomo$ docker run -d -p 8080:5001 semplicementeria/rest-server:v2
+28ede454eb0c2d16a4f65fc583be428893e3b88ed11abcd5aff705be230711c7
+Host-006:esercizidistr mariapiabuonomo$ docker compose restart
+no configuration file provided: not found
+Host-006:esercizidistr mariapiabuonomo$ 
+Host-006:esercizidistr mariapiabuonomo$ sudo docker compose restart
+Password:
+Sorry, try again.
+Password:
+no configuration file provided: not found
+Host-006:esercizidistr mariapiabuonomo$ sudo docker build -t semplicementeria/rest-server:v2 .
+Password:
+[+] Building 6.3s (11/11) FINISHED                         docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 952B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.11-slim        3.9s
+ => [auth] library/python:pull token for registry-1.docker.io              0.0s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/5] FROM docker.io/library/python:3.11-slim@sha256:5be45dbade29bebd  0.0s
+ => => resolve docker.io/library/python:3.11-slim@sha256:5be45dbade29bebd  0.0s
+ => [internal] load build context                                          2.2s
+ => => transferring context: 6.83MB                                        2.1s
+ => CACHED [2/5] WORKDIR /app                                              0.0s
+ => CACHED [3/5] COPY requirements.txt .                                   0.0s
+ => CACHED [4/5] RUN pip install --no-cache-dir -r requirements.txt        0.0s
+ => CACHED [5/5] COPY . .                                                  0.0s
+ => exporting to image                                                     0.1s
+ => => exporting layers                                                    0.0s
+ => => exporting manifest sha256:4bd5163cdbbe1a0cc2224616b000c190d7e59cdc  0.0s
+ => => exporting config sha256:ee8103a899656677a5540d56048543bf8721561db5  0.0s
+ => => exporting attestation manifest sha256:ce5ea682194bdbf1fa3422445170  0.0s
+ => => exporting manifest list sha256:1ae467c0130dc5948d140f0f4adc2f2128a  0.0s
+ => => naming to docker.io/semplicementeria/rest-server:v2                 0.0s
+ => => unpacking to docker.io/semplicementeria/rest-server:v2              0.0s
+Host-006:esercizidistr mariapiabuonomo$ docker push semplicementeria/rest-server:v2
+The push refers to repository [docker.io/semplicementeria/rest-server]
+1b9fe51c57f9: Layer already exists 
+d67bedf18e0a: Layer already exists 
+dda086c62cf2: Layer already exists 
+878ef0ae99d6: Layer already exists 
+068949646e5a: Layer already exists 
+518abaec573a: Layer already exists 
+ac2e4ef91050: Layer already exists 
+b4380fdc6093: Pushed 
+d637807aba98: Layer already exists 
+v2: digest: sha256:1ae467c0130dc5948d140f0f4adc2f2128a0af35cc0169bc9fab6118357a04bb size: 856
+Host-006:esercizidistr mariapiabuonomo$ docker ps
+CONTAINER ID   IMAGE          COMMAND           CREATED          STATUS          PORTS                                         NAMES
+28ede454eb0c   d80f7e709e11   "python app.py"   22 minutes ago   Up 22 minutes   0.0.0.0:8080->5001/tcp, [::]:8080->5001/tcp   affectionate_matsumoto
+Host-006:esercizidistr mariapiabuonomo$ docker stop 28ede454eb0c
+28ede454eb0c
+Host-006:esercizidistr mariapiabuonomo$ docker rm 28ede454eb0c
+28ede454eb0c
+Host-006:esercizidistr mariapiabuonomo$ docker run -d -p 8080:5000 semplicementeria/rest-server:v2
+73b6712689691b85b15bb276db1110cc7130cc59aa77ce4d4c22c295d69de9ba
+Host-006:esercizidistr mariapiabuonomo$ docker run -d -p 8080:5000 semplicementeria/rest-server:v2
+7bfd2f9868afb5b24b33af6c2b7296377457b2486084b10702525b317d40fcde
+docker: Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint sharp_lamarr (f3695fb15ef8a45f23ddb24691da232e31079c7a9e2ec428f49ca6413ba9d8eb): Bind for 0.0.0.0:8080 failed: port is already allocated
+
+Run 'docker run --help' for more information
+Host-006:esercizidistr mariapiabuonomo$ docker ps
+CONTAINER ID   IMAGE                             COMMAND           CREATED          STATUS          PORTS                                         NAMES
+73b671268969   semplicementeria/rest-server:v2   "python app.py"   12 minutes ago   Up 12 minutes   0.0.0.0:8080->5000/tcp, [::]:8080->5000/tcp   angry_wing
+Host-006:esercizidistr mariapiabuonomo$ docker stop 73b671268969
+73b671268969
+Host-006:esercizidistr mariapiabuonomo$ sudo docker build -t semplicementeria/rest-server:v2 .
+Password:
+[+] Building 5.8s (11/11) FINISHED                         docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 952B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.11-slim        3.0s
+ => [auth] library/python:pull token for registry-1.docker.io              0.0s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/5] FROM docker.io/library/python:3.11-slim@sha256:5be45dbade29bebd  0.0s
+ => => resolve docker.io/library/python:3.11-slim@sha256:5be45dbade29bebd  0.0s
+ => [internal] load build context                                          2.6s
+ => => transferring context: 6.83MB                                        2.2s
+ => CACHED [2/5] WORKDIR /app                                              0.0s
+ => CACHED [3/5] COPY requirements.txt .                                   0.0s
+ => CACHED [4/5] RUN pip install --no-cache-dir -r requirements.txt        0.0s
+ => CACHED [5/5] COPY . .                                                  0.0s
+ => exporting to image                                                     0.1s
+ => => exporting layers                                                    0.0s
+ => => exporting manifest sha256:4bd5163cdbbe1a0cc2224616b000c190d7e59cdc  0.0s
+ => => exporting config sha256:ee8103a899656677a5540d56048543bf8721561db5  0.0s
+ => => exporting attestation manifest sha256:0002e2c2295f45944996919d4807  0.0s
+ => => exporting manifest list sha256:a78a538e882f30e10260665f0e81338c2e9  0.0s
+ => => naming to docker.io/semplicementeria/rest-server:v2                 0.0s
+ => => unpacking to docker.io/semplicementeria/rest-server:v2              0.0s
+Host-006:esercizidistr mariapiabuonomo$ docker push semplicementeria/rest-server:v2
+The push refers to repository [docker.io/semplicementeria/rest-server]
+f5d48ce599cf: Pushed 
+1b9fe51c57f9: Layer already exists 
+d67bedf18e0a: Layer already exists 
+518abaec573a: Layer already exists 
+dda086c62cf2: Layer already exists 
+068949646e5a: Layer already exists 
+d637807aba98: Layer already exists 
+878ef0ae99d6: Layer already exists 
+ac2e4ef91050: Layer already exists 
+v2: digest: sha256:a78a538e882f30e10260665f0e81338c2e9cf6756766051e640e4e98b908d0dd size: 856
+Host-006:esercizidistr mariapiabuonomo$ docker build -t semplicementeria/rest-server:v3 .
+
+[+] Building 5.2s (11/11) FINISHED                         docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 952B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.11-slim        2.5s
+ => [auth] library/python:pull token for registry-1.docker.io              0.0s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/5] FROM docker.io/library/python:3.11-slim@sha256:5be45dbade29bebd  0.0s
+ => => resolve docker.io/library/python:3.11-slim@sha256:5be45dbade29bebd  0.0s
+ => [internal] load build context                                          2.4s
+ => => transferring context: 6.83MB                                        2.2s
+ => CACHED [2/5] WORKDIR /app                                              0.0s
+ => CACHED [3/5] COPY requirements.txt .                                   0.0s
+ => CACHED [4/5] RUN pip install --no-cache-dir -r requirements.txt        0.0s
+ => CACHED [5/5] COPY . .                                                  0.0s
+ => exporting to image                                                     0.1s
+ => => exporting layers                                                    0.0s
+ => => exporting manifest sha256:4bd5163cdbbe1a0cc2224616b000c190d7e59cdc  0.0s
+ => => exporting config sha256:ee8103a899656677a5540d56048543bf8721561db5  0.0s
+ => => exporting attestation manifest sha256:ee2693ac50d5fd078e89e6541f04  0.0s
+ => => exporting manifest list sha256:b046e8c7823d93d42c3d1166fb7c7817eea  0.0s
+ => => naming to docker.io/semplicementeria/rest-server:v3                 0.0s
+ => => unpacking to docker.io/semplicementeria/rest-server:v3              0.0s
+Host-006:esercizidistr mariapiabuonomo$ docker push semplicementeria/rest-server:v3
+The push refers to repository [docker.io/semplicementeria/rest-server]
+ac2e4ef91050: Layer already exists 
+d67bedf18e0a: Layer already exists 
+878ef0ae99d6: Layer already exists 
+dda086c62cf2: Layer already exists 
+64db1417253a: Pushed 
+1b9fe51c57f9: Layer already exists 
+068949646e5a: Layer already exists 
+518abaec573a: Layer already exists 
+d637807aba98: Layer already exists 
+v3: digest: sha256:b046e8c7823d93d42c3d1166fb7c7817eea05e625820739b856924fd8e8b56af size: 856
+Host-006:esercizidistr mariapiabuonomo$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+Host-006:esercizidistr mariapiabuonomo$ docker run -d -p 8080:5001 semplicementeria/rest-server:v3
+aa88bb0f80b8f59a9533225974390685b14339687ec1b362e8fe58ea858f4dc7
+Host-006:esercizidistr mariapiabuonomo$ docker ps
+CONTAINER ID   IMAGE                             COMMAND           CREATED         STATUS         PORTS                                         NAMES
+aa88bb0f80b8   semplicementeria/rest-server:v3   "python app.py"   6 minutes ago   Up 6 minutes   0.0.0.0:8080->5001/tcp, [::]:8080->5001/tcp   jolly_spence
+Host-006:esercizidistr mariapiabuonomo$ docker stop aa88bb0f80b8
+aa88bb0f80b8
+Host-006:esercizidistr mariapiabuonomo$ docker rmi semplicementeria/rest-server:v1 semplicementeria/rest-server:v2 semplicementeria/rest-server:v3
+Untagged: semplicementeria/rest-server:v2
+Deleted: sha256:a78a538e882f30e10260665f0e81338c2e9cf6756766051e640e4e98b908d0dd
+Error response from daemon: conflict: unable to delete semplicementeria/rest-server:v1 (must be forced) - container ea0d097fa006 is using its referenced image 8f88df5e2a3a
+Error response from daemon: conflict: unable to delete semplicementeria/rest-server:v3 (must be forced) - container aa88bb0f80b8 is using its referenced image b046e8c7823d
+Host-006:esercizidistr mariapiabuonomo$ docker rm -f $(docker ps -aq)
+aa88bb0f80b8
+7bfd2f9868af
+73b671268969
+ea0d097fa006
+7301c9f608f7
+3ff4211b63fc
+b76d14bed079
+1f505ef39836
+d5454103dab6
+a44ba104574c
+478e22a49726
+9983d1f8b716
+25b46f02e87d
+7c2b4fcd0f50
+247ef0f18b68
+3878d25f37a5
+e6ef787293f3
+7ff4719caf77
+e3c5e2a5c92a
+454e33cd146b
+d61279742cef
+8be17aabe738
+839c41909457
+af9250733e2f
+b84ce05cfea5
+aa6417eb390a
+51a707e65f07
+b066ac1cce20
+76e900e9cb65
+6eef24f25342
+cd0b003c709e
+73d8bd86077e
+dd8267a8522b
+0853cca7b203
+9efdb902c277
+62288901f312
+afe41df90ff6
+d23f4b98cfa9
+Host-006:esercizidistr mariapiabuonomo$ docker rmi semplicementeria/rest-server:v1 semplicementeria/rest-server:v2 semplicementeria/rest-server:v3
+Untagged: semplicementeria/rest-server:v1
+Deleted: sha256:8f88df5e2a3a1212b9059d83b2d27c0abf9836114b01e8bf0eb5d260d1ff7368
+Untagged: semplicementeria/rest-server:v3
+Deleted: sha256:b046e8c7823d93d42c3d1166fb7c7817eea05e625820739b856924fd8e8b56af
+Error response from daemon: No such image: semplicementeria/rest-server:v2
+Host-006:esercizidistr mariapiabuonomo$ docker build -t semplicementeria/rest-server:v1 .
+[+] Building 15.7s (11/11) FINISHED                        docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 952B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.11-slim        5.1s
+ => [auth] library/python:pull token for registry-1.docker.io              0.0s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/5] FROM docker.io/library/python:3.11-slim@sha256:5be45dbade29bebd  0.0s
+ => => resolve docker.io/library/python:3.11-slim@sha256:5be45dbade29bebd  0.0s
+ => [internal] load build context                                          2.2s
+ => => transferring context: 6.83MB                                        2.1s
+ => CACHED [2/5] WORKDIR /app                                              0.0s
+ => CACHED [3/5] COPY requirements.txt .                                   0.0s
+ => CACHED [4/5] RUN pip install --no-cache-dir -r requirements.txt        0.0s
+ => CACHED [5/5] COPY . .                                                  0.0s
+ => exporting to image                                                     8.2s
+ => => exporting layers                                                    0.0s
+ => => exporting manifest sha256:4bd5163cdbbe1a0cc2224616b000c190d7e59cdc  0.0s
+ => => exporting config sha256:ee8103a899656677a5540d56048543bf8721561db5  0.0s
+ => => exporting attestation manifest sha256:047589ee19622d3c6fa8441bd42b  0.0s
+ => => exporting manifest list sha256:53a3184ca6b7352257d6601b75c0fea2d20  0.0s
+ => => naming to docker.io/semplicementeria/rest-server:v1                 0.0s
+ => => unpacking to docker.io/semplicementeria/rest-server:v1              8.1s
+Host-006:esercizidistr mariapiabuonomo$ docker push semplicementeria/rest-server:v1
+The push refers to repository [docker.io/semplicementeria/rest-server]
+1b9fe51c57f9: Layer already exists 
+518abaec573a: Layer already exists 
+d637807aba98: Layer already exists 
+878ef0ae99d6: Layer already exists 
+ac2e4ef91050: Layer already exists 
+dda086c62cf2: Layer already exists 
+068949646e5a: Layer already exists 
+d67bedf18e0a: Layer already exists 
+95977fc6ac8e: Pushed 
+v1: digest: sha256:53a3184ca6b7352257d6601b75c0fea2d20d3cf48b95c83e0d8ddf7712cb7994 size: 856
+Host-006:esercizidistr mariapiabuonomo$ ls
+__pycache__			ASSIGNMENT4_CLIENT_done.py
+advanced-kubernetes		ASSIGNMENT4_SERVER_done.py
+app.py				ASSIGNMENT4.proto
+ASSIGNMENT1_done.py		Dockerfile
+ASSIGNMENT10_done.py		e02_done.py
+ASSIGNMENT2_CLIENT_done.py	LAB11_assignment
+ASSIGNMENT2_SERVER_done.py	network-automation
+ASSIGNMENT3_done.py		requirements.txt
+Host-006:esercizidistr mariapiabuonomo$ cd LAB11_assignment/
+Host-006:LAB11_assignment mariapiabuonomo$ docker build -t semplicementeria/rest-server:v1 .
+[+] Building 3.4s (10/10) FINISHED                         docker:desktop-linux
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 137B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.9-slim         2.7s
+ => [auth] library/python:pull token for registry-1.docker.io              0.0s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/4] FROM docker.io/library/python:3.9-slim@sha256:2d97f6910b16bd338  0.0s
+ => => resolve docker.io/library/python:3.9-slim@sha256:2d97f6910b16bd338  0.0s
+ => [internal] load build context                                          0.0s
+ => => transferring context: 28B                                           0.0s
+ => CACHED [2/4] WORKDIR /app                                              0.0s
+ => CACHED [3/4] RUN pip install flask numpy                               0.0s
+ => CACHED [4/4] COPY app.py .                                             0.0s
+ => exporting to image                                                     0.6s
+ => => exporting layers                                                    0.0s
+ => => exporting manifest sha256:4cffd36e669325d3e839f461a4f1f6d19ff41037  0.0s
+ => => exporting config sha256:34de4657217fdfd8289ff02248a35a8ab0e9fb7fec  0.0s
+ => => exporting attestation manifest sha256:e0285cfdf640adca8fb4685ac44c  0.0s
+ => => exporting manifest list sha256:59dfdca3c6c133df0507f2133926bd625b0  0.0s
+ => => naming to docker.io/semplicementeria/rest-server:v1                 0.0s
+ => => unpacking to docker.io/semplicementeria/rest-server:v1              0.5s
+Host-006:LAB11_assignment mariapiabuonomo$ docker push semplicementeria/rest-server:v1
+The push refers to repository [docker.io/semplicementeria/rest-server]
+1ed06b049c86: Layer already exists 
+ebfe7d4fa0c5: Layer already exists 
+e1c846804bcf: Layer already exists 
+c23f4b503473: Layer already exists 
+a16e55119267: Layer already exists 
+75c6fdac2875: Layer already exists 
+479b8ad8bcc3: Layer already exists 
+e54d0f5bbb31: Pushed 
+v1: digest: sha256:59dfdca3c6c133df0507f2133926bd625b0c1c9aed4dfb1eaae12a74380e013a size: 856
+Host-006:LAB11_assignment mariapiabuonomo$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+Host-006:LAB11_assignment mariapiabuonomo$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+Host-006:LAB11_assignment mariapiabuonomo$ ls
+app.py			Dockerfile		my-service.yaml
+configmap.yaml		my-deployment.yaml
+Host-006:LAB11_assignment mariapiabuonomo$ nano app.py
+Host-006:LAB11_assignment mariapiabuonomo$ nano app.py
+Host-006:LAB11_assignment mariapiabuonomo$ rm app.py
+Host-006:LAB11_assignment mariapiabuonomo$ cd ..
+Host-006:esercizidistr mariapiabuonomo$ ls
+__pycache__			ASSIGNMENT4_CLIENT_done.py
+advanced-kubernetes		ASSIGNMENT4_SERVER_done.py
+app.py				ASSIGNMENT4.proto
+ASSIGNMENT1_done.py		Dockerfile
+ASSIGNMENT10_done.py		e02_done.py
+ASSIGNMENT2_CLIENT_done.py	LAB11_assignment
+ASSIGNMENT2_SERVER_done.py	network-automation
+ASSIGNMENT3_done.py		requirements.txt
+Host-006:esercizidistr mariapiabuonomo$ cd LAB11_assignment/
+Host-006:LAB11_assignment mariapiabuonomo$ nano app.py
+Host-006:LAB11_assignment mariapiabuonomo$ nano app.py
+Host-006:LAB11_assignment mariapiabuonomo$ docker build -t semplicementeria/rest-server:v1 .
+[+] Building 1.5s (10/10) FINISHED                                               docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                             0.0s
+ => => transferring dockerfile: 137B                                                             0.0s
+ => [internal] load metadata for docker.io/library/python:3.9-slim                               1.2s
+ => [auth] library/python:pull token for registry-1.docker.io                                    0.0s
+ => [internal] load .dockerignore                                                                0.0s
+ => => transferring context: 2B                                                                  0.0s
+ => [1/4] FROM docker.io/library/python:3.9-slim@sha256:2d97f6910b16bd338d3060f261f53f144965f75  0.0s
+ => => resolve docker.io/library/python:3.9-slim@sha256:2d97f6910b16bd338d3060f261f53f144965f75  0.0s
+ => [internal] load build context                                                                0.0s
+ => => transferring context: 2.13kB                                                              0.0s
+ => CACHED [2/4] WORKDIR /app                                                                    0.0s
+ => CACHED [3/4] RUN pip install flask numpy                                                     0.0s
+ => [4/4] COPY app.py .                                                                          0.0s
+ => exporting to image                                                                           0.1s
+ => => exporting layers                                                                          0.0s
+ => => exporting manifest sha256:215370de4782cf0add7c5d7c1200c7722a61adc60920dae9d2553690ffd52c  0.0s
+ => => exporting config sha256:662bc0ece6f956eb5bf90a5e2ff825121ca7777ec1aab08a19204ef5740b39ad  0.0s
+ => => exporting attestation manifest sha256:be1fda84b3d0bf3507c318d6276de42a3932a76a0754a39d5f  0.0s
+ => => exporting manifest list sha256:350df65bab371453af1a8686e5784d73d8efcce7ff1e82e1a9374c39b  0.0s
+ => => naming to docker.io/semplicementeria/rest-server:v1                                       0.0s
+ => => unpacking to docker.io/semplicementeria/rest-server:v1                                    0.0s
+Host-006:LAB11_assignment mariapiabuonomo$ docker push semplicementeria/rest-server:v1
+The push refers to repository [docker.io/semplicementeria/rest-server]
+a16e55119267: Layer already exists 
+c23f4b503473: Layer already exists 
+e1c846804bcf: Layer already exists 
+479b8ad8bcc3: Layer already exists 
+ebfe7d4fa0c5: Layer already exists 
+75c6fdac2875: Layer already exists 
+cc3ddaa988e2: Pushed 
+d994d90bda4e: Pushed 
+v1: digest: sha256:350df65bab371453af1a8686e5784d73d8efcce7ff1e82e1a9374c39b5add45b size: 856
+Host-006:LAB11_assignment mariapiabuonomo$ 

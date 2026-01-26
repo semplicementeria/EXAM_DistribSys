@@ -1,0 +1,977 @@
+ubuntu@k8s-node:~$ exit
+logout
+Host-006:~ mariapiabuonomo$ multipass shell secondaVM
+Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.8.0-90-generic aarch64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Sun Jan 25 17:18:50 CET 2026
+
+  System load:             1.72
+  Usage of /:              17.3% of 37.70GB
+  Memory usage:            18%
+  Swap usage:              0%
+  Processes:               151
+  Users logged in:         0
+  IPv4 address for enp0s1: 192.168.64.10
+  IPv6 address for enp0s1: fdb4:d35f:6cba:c225:5054:ff:fe11:5f6b
+
+ * Strictly confined Kubernetes makes edge and IoT secure. Learn how MicroK8s
+   just raised the bar for easy, resilient and secure K8s cluster deployment.
+
+   https://ubuntu.com/engage/secure-kubernetes-at-the-edge
+
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+Last login: Sun Jan 25 16:38:51 2026 from 192.168.64.1
+ubuntu@secondaVM:~$ ls
+LAB11_assignment  advanced-kubernetes  demo-app.tar  hello-operator.tar
+ubuntu@secondaVM:~$ cd LAB11_assignment/
+ubuntu@secondaVM:~/LAB11_assignment$ ls
+app.py
+ubuntu@secondaVM:~/LAB11_assignment$ nano app.py
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-configmap.yaml
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-deployment.yaml
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-configmap.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-service.yaml
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml 
+sudo k0s kubectl apply -f my-service.yaml
+sudo k0s kubectl apply -f my-configmap.yaml
+deployment.apps/rest-server-dep created
+service/rest-server-svc created
+configmap/rest-server-config created
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS              RESTARTS   AGE
+rest-server-dep-7d5575bc59-q9n9x   0/1     ContainerCreating   0          77s
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS              RESTARTS   AGE
+rest-server-dep-7d5575bc59-q9n9x   0/1     ContainerCreating   0          82s
+^Cubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS              RESTARTS   AGE
+rest-server-dep-7d5575bc59-q9n9x   0/1     ContainerCreating   0          3m40s
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl describe pod rest-server-dep-7d5575bc59-q9n9x9x
+Name:             rest-server-dep-7d5575bc59-q9n9x
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             secondavm/192.168.64.10
+Start Time:       Sun, 25 Jan 2026 17:20:54 +0100
+Labels:           app=rest-server
+                  pod-template-hash=7d5575bc59
+Annotations:      <none>
+Status:           Pending
+IP:               
+IPs:              <none>
+Controlled By:    ReplicaSet/rest-server-dep-7d5575bc59
+Containers:
+  rest-server:
+    Container ID:   
+    Image:          semplicementeria/rest-server:v2
+    Image ID:       
+    Port:           5000/TCP
+    Host Port:      0/TCP
+    State:          Waiting
+      Reason:       ContainerCreating
+    Ready:          False
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /etc/my_res.json from config-volume (rw,path="my_res.json")
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-k75jw (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  config-volume:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      rest-server-config
+    Optional:  false
+  kube-api-access-k75jw:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason       Age                  From               Message
+  ----     ------       ----                 ----               -------
+  Normal   Scheduled    4m7s                 default-scheduler  Successfully assigned default/rest-server-dep-7d5575bc59-q9n9x to secondavm
+  Warning  FailedMount  4m7s (x2 over 4m8s)  kubelet            MountVolume.SetUp failed for volume "config-volume" : configmap "rest-server-config" not found
+  Normal   Pulling      4m5s                 kubelet            Pulling image "semplicementeria/rest-server:v2"
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl create configmap rest-server-config --from-file=my_res.json
+error: error reading my_res.json: no such file or directory
+ubuntu@secondaVM:~/LAB11_assignment$ ls
+app.py  my-configmap.yaml  my-deployment.yaml  my-service.yaml
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-configmap.yaml
+configmap/rest-server-config unchanged
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml
+sudo k0s kubectl apply -f my-service.yaml
+deployment.apps/rest-server-dep unchanged
+service/rest-server-svc unchanged
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS              RESTARTS   AGE
+rest-server-dep-7d5575bc59-q9n9x   0/1     ContainerCreating   0          6m16s
+^Cubuntu@secondaVM:~/LAB11_assignment$ nano my-configmap.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl delete pod rest-server-dep-7d5575bc59-q9n9x
+pod "rest-server-dep-7d5575bc59-q9n9x" deleted from default namespace
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS              RESTARTS   AGE
+rest-server-dep-7d5575bc59-lcwxq   0/1     ContainerCreating   0          14s
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS    RESTARTS   AGE
+rest-server-dep-7d5575bc59-lcwxq   1/1     Running   0          26s
+^Cubuntu@secondaVM:~/LAB11_assignment$ ^C
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl logs rest-server-dep-7d5575bc59-lcwxq
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://10.244.0.12:5001
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 564-143-542
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+curl: (7) Failed to connect to localhost port 30080 after 2 ms: Couldn't connect to server
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl logs rest-server-dep-7d5575bc59-lcwxq
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://10.244.0.12:5001
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 564-143-542
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+curl: (7) Failed to connect to localhost port 30080 after 1 ms: Couldn't connect to server
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get svc
+NAME              TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+kubernetes        ClusterIP   10.96.0.1      <none>        443/TCP        46h
+rest-server-svc   NodePort    10.108.7.236   <none>        80:30080/TCP   12m
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://10.244.0.12:5001/resources
+<!doctype html>
+<html lang=en>
+<title>404 Not Found</title>
+<h1>Not Found</h1>
+<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+curl: (7) Failed to connect to localhost port 30080 after 2 ms: Couldn't connect to server
+ubuntu@secondaVM:~/LAB11_assignment$ nano app.py
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-deployment.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-service.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-configmap.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml 
+sudo k0s kubectl apply -f my-service.yaml
+sudo k0s kubectl apply -f my-configmap.yaml
+deployment.apps/rest-server-dep configured
+service/rest-server-svc configured
+configmap/rest-server-config unchanged
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                              READY   STATUS    RESTARTS   AGE
+rest-server-dep-5d94c74d8-hvm6s   1/1     Running   0          9s
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-deployment.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v2/resources
+<!doctype html>
+<html lang=en>
+<title>404 Not Found</title>
+<h1>Not Found</h1>
+<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl logs rest-server-dep-7d5575bc59-lcwxq
+error: error from server (NotFound): pods "rest-server-dep-7d5575bc59-lcwxq" not found in namespace "default"
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl delete pod rest-server-dep-7d5575bc59-lcwxq
+Error from server (NotFound): pods "rest-server-dep-7d5575bc59-lcwxq" not found
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl delete pod rest-server-dep-5d94c74d8-hvm6s
+pod "rest-server-dep-5d94c74d8-hvm6s" deleted from default namespace
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                              READY   STATUS    RESTARTS   AGE
+rest-server-dep-5d94c74d8-zkwll   1/1     Running   0          15s
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl exec -it rest-server-dep-5d94c74d8-zkwll -- cat /etc/my_res.json
+[
+  {
+    "name": "resource1",
+    "value": "Valore Alpha"
+  },
+  {
+    "name": "resource2",
+    "value": "Valore Beta"
+  }
+]
+ubuntu@secondaVM:~/LAB11_assignment$ nano app.py
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl logs rest-server-dep-5d94c74d8-zkwll
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://10.244.0.14:5001
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 961-914-506
+10.244.0.1 - - [25/Jan/2026 16:41:13] "GET /response/v1/resources HTTP/1.1" 200 -
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-service.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-deployment.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-configmap.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ ls
+app.py  my-configmap.yaml  my-deployment.yaml  my-service.yaml
+ubuntu@secondaVM:~/LAB11_assignment$ nano DockerFile
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml 
+sudo k0s kubectl apply -f my-service.yaml
+sudo k0s kubectl apply -f my-configmap.yaml
+deployment.apps/rest-server-dep unchanged
+service/rest-server-svc unchanged
+configmap/rest-server-config unchanged
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                              READY   STATUS    RESTARTS   AGE
+rest-server-dep-5d94c74d8-zkwll   1/1     Running   0          8m
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v2/resources
+<!doctype html>
+<html lang=en>
+<title>404 Not Found</title>
+<h1>Not Found</h1>
+<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get endpoints rest-server-svc
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME              ENDPOINTS          AGE
+rest-server-svc   10.244.0.14:5001   29m
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl logs 
+error: expected 'logs [-f] [-p] (POD | TYPE/NAME) [-c CONTAINER]'.
+POD or TYPE/NAME is a required argument for the logs command
+See 'k0s kubectl logs -h' for help and examples
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl logs $(sudo k0s kubectl get pods -l app=rest.server -o name)
+error: expected 'logs [-f] [-p] (POD | TYPE/NAME) [-c CONTAINER]'.
+POD or TYPE/NAME is a required argument for the logs command
+See 'k0s kubectl logs -h' for help and examples
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl logs $(sudo k0s kubectl get pods -l app=rest-server -o name)
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://10.244.0.14:5001
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 961-914-506
+10.244.0.1 - - [25/Jan/2026 16:41:13] "GET /response/v1/resources HTTP/1.1" 200 -
+10.244.0.1 - - [25/Jan/2026 16:48:57] "GET /response/v1/resources HTTP/1.1" 200 -
+10.244.0.1 - - [25/Jan/2026 16:49:06] "GET /response/v2/resources HTTP/1.1" 404 -
+10.244.0.1 - - [25/Jan/2026 16:50:13] "GET /response/v1/resources HTTP/1.1" 200 -
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl exec $(sudo k0s kubectl get pods -l app=rest-server -o name) -- ls -l /etc/my_res.json
+-rw-r--r-- 1 root root 126 Jan 25 16:40 /etc/my_res.json
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml
+sudo k0s kubectl apply -f my-service.yaml
+deployment.apps/rest-server-dep unchanged
+service/rest-server-svc unchanged
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get endpoints rest-server-svc
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME              ENDPOINTS          AGE
+rest-server-svc   10.244.0.14:5001   33m
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl exec $(sudo k0s kubectl get pods -l app=rest-server -o name) -- cat app.py
+'''Write the python code to run a Flask server exposing a REST API that allows the creation/modification/deletion 
+of resources offered by a "random response time" web application. Each resource must represent a generator of response times following a given random distribution, 
+with specified parameter(s), mimicking the diverse computation time of some web application server'''
+
+from flask import Flask, request, jsonify
+import time, uuid, random
+import numpy as np
+
+#so we have a server that a user can use to create new random response time generators
+#here we initialize the Flask app:
+app = Flask(__name__)
+
+# I create a global storage for the generators
+generators = []
+
+#Creation of the source (POST)
+@app.route('/response/v1/resources', methods=['POST'])
+def create_resource():
+   # we have to make sure that the user actually went json:
+    if not request.is_json:
+        return "request must be JSON\n", 415 #error for the unsupported media type
+   
+   #now that we know it's JSON then we extract the data that has been requested: parsing of the JSON
+    data = request.get_json()
+
+   #then we extract the data and validate the fields that are our parameters we're interested into
+    distr = data.get('distr')
+    params = data.get('params')
+    task = data.get('task')
+
+   #now here i put some other errors
+    if not distr or not params or not task:
+      return "Parameters not available", 400 #the resource exists but the input is wrong
+   #I'll put the same error for the invalid distribution type and if the task is not in cpu or sleep
+
+    if distr not in ['exponential', 'deterministic', 'uniform']:
+      return "Invalid distribution type\n", 400
+   
+    if task not in ['cpu', 'sleep']:
+      return "Invalid task type\n", 400
+    
+    #creation of the resource
+    resource_id = str(uuid.uuid4())
+    new_resource = {
+        "id": resource_id,
+        "distr": distr,
+        "params": params,
+        "task": task
+    }
+
+    #we create a global list into which we can initialize our generators
+    generators.append(new_resource)
+
+    #every resource has to allocate memory in it so I have to create the following structure:
+    
+    
+    #now I have to store them in a global list and append my new objects:
+    return jsonify(new_resource), 201
+ 
+#Then I have to repeat this step but for the GET part:
+@app.route('/response/v1/resources', methods=['GET'])
+def get_all_resources(): #this function is for all the generators in the list
+   return jsonify(generators), 200
+
+@app.route('/response/v1/resources/<string:id>', methods=['GET'])
+def get_one_resource(id): #this function is only for one generator if found inside the list that we have generated before.
+   for resource in generators:
+      if resource["id"] == id:
+         return jsonify(resource), 200  #to update the state 
+   return "Resource not found\n", 404 #If it is not found
+   
+#Then I have the PUT part in which we have to update the generator list
+@app.route('/response/v1/resources/<string:id>', methods=['PUT'])
+def update_resource(id):
+    if not request.is_json:
+        return "Request must be JSON\n", 415
+    data = request.get_json()
+
+    for resource in generators:
+        if resource["id"] == id:
+            # Update fields if provided
+            if "distr" in data:
+                if data["distr"] not in ['exponential', 'deterministic', 'uniform']:
+                    return "Invalid distribution type\n", 400
+                resource["distr"] = data["distr"]
+            if "params" in data:
+                resource["params"] = data["params"]
+            if "task" in data:
+                if data["task"] not in ['cpu', 'sleep']:
+                    return "Invalid task type\n", 400
+                resource["task"] = data["task"]
+            return jsonify(resource), 200
+
+    return "Resource not found\n", 404
+
+#From here I implement the DELETE part:
+@app.route('/response/v1/resources/<string:id>', methods = ['DELETE'])
+def delete_resource(id):
+    for r in generators:
+        if r["id"] == id:
+            generators.remove(r)
+            return "", 204
+    return "Resource not found", 404
+
+#And then we RUN: 
+@app.route('/response/v1/resources/<string:id>/run', methods=['GET'])
+def run_resource(id):
+    for r in generators:
+        if r["id"] == id:
+            distr = r["distr"]
+            params = r["params"]
+            task = r["task"]
+
+            # --- Generate random delay ---
+            if distr == "deterministic":
+                interval = params.get("fixed", 1)
+            elif distr == "uniform":
+                interval = np.random.uniform(0, params.get("T", 1))
+            elif distr == "exponential":
+                interval = np.random.exponential(1 / params.get("lambda", 1))
+            else:
+                return "Invalid distribution\n", 400
+
+            start_time = time.time()
+
+            if task == "sleep":
+                # I/O-bound delay (low CPU)
+                time.sleep(interval)
+
+            elif task == "cpu":
+                # CPU-bound delay (high CPU)
+                while time.time() - start_time < interval:
+                    x = time.time() - start_time
+                    x = float(x) / 3.141592
+                    x = float(3.141592) / x
+
+            duration = round(time.time() - start_time, 3)
+
+            return jsonify({
+                "id": id,
+                "delay": duration,
+                "task": task,
+                "distr": distr,
+                "status": "completed"
+            }), 200
+
+    return "Resource not found\n", 404
+
+#tests for the app.rout:
+@app.route("/")
+def welcome():
+    return "<h1>The random response time server is running!</h1>\n"
+
+@app.route("/test/")
+def test():
+    return "<h1>This is the test folder.</h1>\n"
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5001, debug=True)
+
+
+# TEST: first we have to run the code to run the server in a terminal. In the other...
+'''
+1) curl -X POST http://localhost:5001/response/v1/resources \
+     -H "Content-Type: application/json" \
+     -d '{"distr": "deterministic", "params": {"fixed": 3}, "task": "cpu"}' (here we can change the deterministic 
+     with the uniform or the exponential by changing the name and the values like...
+     
+     -d '{"distr": "uniform", "params": {"T": 10}, "task": "sleep"}'
+     or:
+     -d '{"distr": "exponential", "params": {"lambda": 0.5}, "task": "sleep"}')
+
+2) curl http://localhost:5001/response/v1/resources to see if the server has saved all the resources
+and then we run them:
+curl http://localhost:5001/response/v1/resources/<ID>/run
+
+3) We can update a resource (for example to a 1-second fixed CPU task):
+curl -X PUT http://localhost:5001/response/v1/resources/<ID> \
+     -H "Content-Type: application/json" \
+     -d '{"distr": "deterministic", "params": {"fixed": 1}, "task": "cpu"}' 
+
+4) and delete it:
+curl -X DELETE http://localhost:5001/response/v1/resources/<ID>
+
+5) curl http://localhost:5001/response/v1/resources final check to see if all went right
+'''ubuntu@secondaVM:~/LAB11_assignment$ nano my-deployment.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml
+sudo k0s kubectl rollout restart deployment rest-server-dep
+deployment.apps/rest-server-dep configured
+deployment.apps/rest-server-dep restarted
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get endpoints rest-server-svc
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME              ENDPOINTS          AGE
+rest-server-svc   10.244.0.15:5001   36m
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS    RESTARTS   AGE
+rest-server-dep-54f48b9f4c-8kw9g   1/1     Running   0          38s
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS    RESTARTS   AGE
+rest-server-dep-54f48b9f4c-8kw9g   1/1     Running   0          74s
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl exec rest-server-dep-54f48b9f4c-8kw9g -- cat app.py
+'''Write the python code to run a Flask server exposing a REST API that allows the creation/modification/deletion 
+of resources offered by a "random response time" web application. Each resource must represent a generator of response times following a given random distribution, 
+with specified parameter(s), mimicking the diverse computation time of some web application server'''
+
+from flask import Flask, request, jsonify
+import time, uuid, random
+import numpy as np
+
+#so we have a server that a user can use to create new random response time generators
+#here we initialize the Flask app:
+app = Flask(__name__)
+
+# I create a global storage for the generators
+generators = []
+
+#Creation of the source (POST)
+@app.route('/response/v1/resources', methods=['POST'])
+def create_resource():
+   # we have to make sure that the user actually went json:
+    if not request.is_json:
+        return "request must be JSON\n", 415 #error for the unsupported media type
+   
+   #now that we know it's JSON then we extract the data that has been requested: parsing of the JSON
+    data = request.get_json()
+
+   #then we extract the data and validate the fields that are our parameters we're interested into
+    distr = data.get('distr')
+    params = data.get('params')
+    task = data.get('task')
+
+   #now here i put some other errors
+    if not distr or not params or not task:
+      return "Parameters not available", 400 #the resource exists but the input is wrong
+   #I'll put the same error for the invalid distribution type and if the task is not in cpu or sleep
+
+    if distr not in ['exponential', 'deterministic', 'uniform']:
+      return "Invalid distribution type\n", 400
+   
+    if task not in ['cpu', 'sleep']:
+      return "Invalid task type\n", 400
+    
+    #creation of the resource
+    resource_id = str(uuid.uuid4())
+    new_resource = {
+        "id": resource_id,
+        "distr": distr,
+        "params": params,
+        "task": task
+    }
+
+    #we create a global list into which we can initialize our generators
+    generators.append(new_resource)
+
+    #every resource has to allocate memory in it so I have to create the following structure:
+    
+    
+    #now I have to store them in a global list and append my new objects:
+    return jsonify(new_resource), 201
+ 
+#Then I have to repeat this step but for the GET part:
+@app.route('/response/v1/resources', methods=['GET'])
+def get_all_resources(): #this function is for all the generators in the list
+   return jsonify(generators), 200
+
+@app.route('/response/v1/resources/<string:id>', methods=['GET'])
+def get_one_resource(id): #this function is only for one generator if found inside the list that we have generated before.
+   for resource in generators:
+      if resource["id"] == id:
+         return jsonify(resource), 200  #to update the state 
+   return "Resource not found\n", 404 #If it is not found
+   
+#Then I have the PUT part in which we have to update the generator list
+@app.route('/response/v1/resources/<string:id>', methods=['PUT'])
+def update_resource(id):
+    if not request.is_json:
+        return "Request must be JSON\n", 415
+    data = request.get_json()
+
+    for resource in generators:
+        if resource["id"] == id:
+            # Update fields if provided
+            if "distr" in data:
+                if data["distr"] not in ['exponential', 'deterministic', 'uniform']:
+                    return "Invalid distribution type\n", 400
+                resource["distr"] = data["distr"]
+            if "params" in data:
+                resource["params"] = data["params"]
+            if "task" in data:
+                if data["task"] not in ['cpu', 'sleep']:
+                    return "Invalid task type\n", 400
+                resource["task"] = data["task"]
+            return jsonify(resource), 200
+
+    return "Resource not found\n", 404
+
+#From here I implement the DELETE part:
+@app.route('/response/v1/resources/<string:id>', methods = ['DELETE'])
+def delete_resource(id):
+    for r in generators:
+        if r["id"] == id:
+            generators.remove(r)
+            return "", 204
+    return "Resource not found", 404
+
+#And then we RUN: 
+@app.route('/response/v1/resources/<string:id>/run', methods=['GET'])
+def run_resource(id):
+    for r in generators:
+        if r["id"] == id:
+            distr = r["distr"]
+            params = r["params"]
+            task = r["task"]
+
+            # --- Generate random delay ---
+            if distr == "deterministic":
+                interval = params.get("fixed", 1)
+            elif distr == "uniform":
+                interval = np.random.uniform(0, params.get("T", 1))
+            elif distr == "exponential":
+                interval = np.random.exponential(1 / params.get("lambda", 1))
+            else:
+                return "Invalid distribution\n", 400
+
+            start_time = time.time()
+
+            if task == "sleep":
+                # I/O-bound delay (low CPU)
+                time.sleep(interval)
+
+            elif task == "cpu":
+                # CPU-bound delay (high CPU)
+                while time.time() - start_time < interval:
+                    x = time.time() - start_time
+                    x = float(x) / 3.141592
+                    x = float(3.141592) / x
+
+            duration = round(time.time() - start_time, 3)
+
+            return jsonify({
+                "id": id,
+                "delay": duration,
+                "task": task,
+                "distr": distr,
+                "status": "completed"
+            }), 200
+
+    return "Resource not found\n", 404
+
+#tests for the app.rout:
+@app.route("/")
+def welcome():
+    return "<h1>The random response time server is running!</h1>\n"
+
+@app.route("/test/")
+def test():
+    return "<h1>This is the test folder.</h1>\n"
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5001, debug=True)
+
+
+# TEST: first we have to run the code to run the server in a terminal. In the other...
+'''
+1) curl -X POST http://localhost:5001/response/v1/resources \
+     -H "Content-Type: application/json" \
+     -d '{"distr": "deterministic", "params": {"fixed": 3}, "task": "cpu"}' (here we can change the deterministic 
+     with the uniform or the exponential by changing the name and the values like...
+     
+     -d '{"distr": "uniform", "params": {"T": 10}, "task": "sleep"}'
+     or:
+     -d '{"distr": "exponential", "params": {"lambda": 0.5}, "task": "sleep"}')
+
+2) curl http://localhost:5001/response/v1/resources to see if the server has saved all the resources
+and then we run them:
+curl http://localhost:5001/response/v1/resources/<ID>/run
+
+3) We can update a resource (for example to a 1-second fixed CPU task):
+curl -X PUT http://localhost:5001/response/v1/resources/<ID> \
+     -H "Content-Type: application/json" \
+     -d '{"distr": "deterministic", "params": {"fixed": 1}, "task": "cpu"}' 
+
+4) and delete it:
+curl -X DELETE http://localhost:5001/response/v1/resources/<ID>
+
+5) curl http://localhost:5001/response/v1/resources final check to see if all went right
+'''ubuntu@secondaVM:~/LAB11_assignmensudo k0s kubectl apply -f my-deployment.yamlaml
+sudo k0s kubectl rollout restart deployment rest-server-dep
+deployment.apps/rest-server-dep unchanged
+deployment.apps/rest-server-dep restarted
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pod rest-server-dep-54f48b9f4c-8kw9g -o jsonpath='{.spec.containers[0].image}'
+Error from server (NotFound): pods "rest-server-dep-54f48b9f4c-8kw9g" not found
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pod rest-server-dep-54f48b9f4c-8kw9g -o jsonpath='{.spec.containers[0].image}'
+Error from server (NotFound): pods "rest-server-dep-54f48b9f4c-8kw9g" not found
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                              READY   STATUS    RESTARTS   AGE
+rest-server-dep-dc558c85b-vmmvp   1/1     Running   0          58s
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pod rest-server-dep-dc558c85b-vmmvp  -o jsonpath='{.spec.containers[0].image}'
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl exec rest-server-dep-54f48b9f4c-8kw9g -- cat /etc/my_res.jsonc-8kw9g -- cat /etc/my_res.json
+Error from server (NotFound): pods "rest-server-dep-54f48b9f4c-8kw9g" not found
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl exec rest-server-dep-dc558c85b-vmmvp -- cat /etc/my_res.json
+[
+  {
+    "name": "resource1",
+    "value": "Valore Alpha"
+  },
+  {
+    "name": "resource2",
+    "value": "Valore Beta"
+  }
+]
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl logs rest-server-dep-dc558c85b-vmmvp 
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://10.244.0.16:5001
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 121-657-114
+10.244.0.1 - - [25/Jan/2026 17:00:11] "GET /response/v1/resources HTTP/1.1" 200 -
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl exec rest-server-dep-dc558c85b-vmmvp -- grep "load_boot_resources" app.py
+command terminated with exit code 1
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl delete deployment rest-server-dep
+sudo k0s kubectl delete svc rest-server-svc
+sudo k0s kubectl delete configmap rest-server-config
+deployment.apps "rest-server-dep" deleted from default namespace
+service "rest-server-svc" deleted from default namespace
+configmap "rest-server-config" deleted from default namespace
+ubuntu@secondaVM:~/LAB11_assignment$ docker images
+Command 'docker' not found, but can be installed with:
+sudo apt install docker.io      # version 28.2.2-0ubuntu1~24.04.1, or
+sudo apt install podman-docker  # version 4.9.3+ds1-1ubuntu0.2
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-d
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-deployment.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml 
+sudo k0s kubectl apply -f my-service.yaml
+sudo k0s kubectl apply -f my-configmap.yaml
+deployment.apps/rest-server-dep created
+service/rest-server-svc created
+configmap/rest-server-config created
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                              READY   STATUS              RESTARTS   AGE
+rest-server-dep-679654967-j7zmz   0/1     ContainerCreating   0          9s
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                              READY   STATUS              RESTARTS   AGE
+rest-server-dep-679654967-j7zmz   0/1     ContainerCreating   0          16s
+rest-server-dep-679654967-j7zmz   1/1     Running             0          16s
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get endpoints rest-server-svc
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME              ENDPOINTS          AGE
+rest-server-svc   10.244.0.17:5001   73s
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-service.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-configmap.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-deployment.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ ls
+DockerFile  app.py  my-configmap.yaml  my-deployment.yaml  my-service.yaml
+ubuntu@secondaVM:~/LAB11_assignment$ nano app.py
+ubuntu@secondaVM:~/LAB11_assignment$ sudo apt update && sudo apt install docker.io -y
+sudo chmod 666 /var/run/docker.sock
+Hit:1 http://ports.ubuntu.com/ubuntu-ports noble InRelease
+Get:2 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease [126 kB]
+Get:3 http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease [126 kB]                  
+Get:4 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease [126 kB]                   
+Get:5 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Components [172 kB]        
+Get:6 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Components [385 kB]    
+Get:7 http://ports.ubuntu.com/ubuntu-ports noble-updates/restricted arm64 Components [212 B]   
+Get:8 http://ports.ubuntu.com/ubuntu-ports noble-updates/multiverse arm64 Components [212 B]   
+Get:9 http://ports.ubuntu.com/ubuntu-ports noble-backports/main arm64 Components [3580 B]      
+Get:10 http://ports.ubuntu.com/ubuntu-ports noble-backports/universe arm64 Components [10.5 kB]
+Get:11 http://ports.ubuntu.com/ubuntu-ports noble-backports/restricted arm64 Components [212 B]
+Get:12 http://ports.ubuntu.com/ubuntu-ports noble-backports/multiverse arm64 Components [212 B]
+Get:13 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 Components [18.4 kB]     
+Get:14 http://ports.ubuntu.com/ubuntu-ports noble-security/universe arm64 Components [74.2 kB] 
+Get:15 http://ports.ubuntu.com/ubuntu-ports noble-security/restricted arm64 Components [212 B] 
+Get:16 http://ports.ubuntu.com/ubuntu-ports noble-security/multiverse arm64 Components [212 B] 
+Fetched 1043 kB in 45s (23.1 kB/s)                                                             
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+All packages are up to date.
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  bridge-utils containerd dns-root-data dnsmasq-base pigz runc ubuntu-fan
+Suggested packages:
+  ifupdown aufs-tools cgroupfs-mount | cgroup-lite debootstrap docker-buildx docker-compose-v2
+  docker-doc rinse zfs-fuse | zfsutils
+The following NEW packages will be installed:
+  bridge-utils containerd dns-root-data dnsmasq-base docker.io pigz runc ubuntu-fan
+0 upgraded, 8 newly installed, 0 to remove and 0 not upgraded.
+Need to get 61.5 MB of archives.
+After this operation, 252 MB of additional disk space will be used.
+Get:1 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 pigz arm64 2.8-1 [60.7 kB]
+Get:2 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 bridge-utils arm64 1.7.1-1ubuntu2 [34.2 kB]
+Get:3 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 runc arm64 1.3.3-0ubuntu1~24.04.3 [8089 kB]
+Get:4 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 containerd arm64 1.7.28-0ubuntu1~24.04.1 [27.3 MB]
+Get:5 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 dns-root-data all 2024071801~ubuntu0.24.04.1 [5918 B]
+Get:6 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 dnsmasq-base arm64 2.90-2ubuntu0.1 [366 kB]
+Get:7 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 docker.io arm64 28.2.2-0ubuntu1~24.04.1 [25.5 MB]
+Get:8 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 ubuntu-fan all 0.12.16+24.04.1 [34.2 kB]
+Fetched 61.5 MB in 2min 47s (369 kB/s)                                                         
+Preconfiguring packages ...
+Selecting previously unselected package pigz.
+(Reading database ... 80843 files and directories currently installed.)
+Preparing to unpack .../0-pigz_2.8-1_arm64.deb ...
+Unpacking pigz (2.8-1) ...
+Selecting previously unselected package bridge-utils.
+Preparing to unpack .../1-bridge-utils_1.7.1-1ubuntu2_arm64.deb ...
+Unpacking bridge-utils (1.7.1-1ubuntu2) ...
+Selecting previously unselected package runc.
+Preparing to unpack .../2-runc_1.3.3-0ubuntu1~24.04.3_arm64.deb ...
+Unpacking runc (1.3.3-0ubuntu1~24.04.3) ...
+Selecting previously unselected package containerd.
+Preparing to unpack .../3-containerd_1.7.28-0ubuntu1~24.04.1_arm64.deb ...
+Unpacking containerd (1.7.28-0ubuntu1~24.04.1) ...
+Selecting previously unselected package dns-root-data.
+Preparing to unpack .../4-dns-root-data_2024071801~ubuntu0.24.04.1_all.deb ...
+Unpacking dns-root-data (2024071801~ubuntu0.24.04.1) ...
+Selecting previously unselected package dnsmasq-base.
+Preparing to unpack .../5-dnsmasq-base_2.90-2ubuntu0.1_arm64.deb ...
+Unpacking dnsmasq-base (2.90-2ubuntu0.1) ...
+Selecting previously unselected package docker.io.
+Preparing to unpack .../6-docker.io_28.2.2-0ubuntu1~24.04.1_arm64.deb ...
+Unpacking docker.io (28.2.2-0ubuntu1~24.04.1) ...
+Selecting previously unselected package ubuntu-fan.
+Preparing to unpack .../7-ubuntu-fan_0.12.16+24.04.1_all.deb ...
+Unpacking ubuntu-fan (0.12.16+24.04.1) ...
+Setting up dnsmasq-base (2.90-2ubuntu0.1) ...
+Setting up runc (1.3.3-0ubuntu1~24.04.3) ...
+Setting up dns-root-data (2024071801~ubuntu0.24.04.1) ...
+Setting up bridge-utils (1.7.1-1ubuntu2) ...
+Setting up pigz (2.8-1) ...
+Setting up containerd (1.7.28-0ubuntu1~24.04.1) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/containerd.service → /usr/lib/systemd/system/containerd.service.
+Setting up ubuntu-fan (0.12.16+24.04.1) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/ubuntu-fan.service → /usr/lib/systemd/system/ubuntu-fan.service.
+Setting up docker.io (28.2.2-0ubuntu1~24.04.1) ...
+info: Selecting GID from range 100 to 999 ...
+info: Adding group `docker' (GID 111) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/docker.service → /usr/lib/systemd/system/docker.service.
+Created symlink /etc/systemd/system/sockets.target.wants/docker.socket → /usr/lib/systemd/system/docker.socket.
+Processing triggers for dbus (1.14.10-4ubuntu4.1) ...
+Processing triggers for man-db (2.12.0-4build2) ...
+Scanning processes...                                                                           
+Scanning candidates...                                                                          
+Scanning linux images...                                                                        
+
+Running kernel seems to be up-to-date.
+
+Restarting services...
+
+Service restarts being deferred:
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart getty@tty1.service
+ systemctl restart serial-getty@ttyAMA0.service
+ systemctl restart systemd-logind.service
+ systemctl restart unattended-upgrades.service
+
+No containers need to be restarted.
+
+User sessions running outdated binaries:
+ ubuntu @ session #1: sshd[993]
+ ubuntu @ user manager service: systemd[1016]
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                              READY   STATUS    RESTARTS   AGE
+rest-server-dep-679654967-j7zmz   1/1     Running   0          9m54s
+^Cubuntu@secondaVM:~/LAB11_assignmentcurl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl rollout restart deployment rest-server-dep
+deployment.apps/rest-server-dep restarted
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS              RESTARTS   AGE
+rest-server-dep-6499d86c56-wstbn   0/1     ContainerCreating   0          4s
+rest-server-dep-679654967-j7zmz    1/1     Running             0          10m
+^Cubuntu@secondaVM:~/LAB11_assignmentcurl http://localhost:30080/response/v1/resources
+[]
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get endpoints rest-server-svc
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME              ENDPOINTS          AGE
+rest-server-svc   10.244.0.17:5001   11m
+ubuntu@secondaVM:~/LAB11_assignment$ nano app.py
+ubuntu@secondaVM:~/LAB11_assignment$ ls
+DockerFile  app.py  my-configmap.yaml  my-deployment.yaml  my-service.yaml
+ubuntu@secondaVM:~/LAB11_assignment$ nano app.py
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml
+sudo k0s kubectl rollout restart deployment rest-server-dep
+deployment.apps/rest-server-dep unchanged
+deployment.apps/rest-server-dep restarted
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml 
+sudo k0s kubectl apply -f my-service.yaml
+sudo k0s kubectl apply -f my-configmap.yaml
+deployment.apps/rest-server-dep unchanged
+service/rest-server-svc unchanged
+configmap/rest-server-config unchanged
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS    RESTARTS   AGE
+rest-server-dep-5fbcf99cb8-wvccb   1/1     Running   0          75s
+^Cubuntu@secondaVM:~/LAB11_assignmentcurl http://localhost:30080/response/v1/resources
+curl: (7) Failed to connect to localhost port 30080 after 1 ms: Couldn't connect to server
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+curl: (7) Failed to connect to localhost port 30080 after 2 ms: Couldn't connect to server
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS    RESTARTS   AGE
+rest-server-dep-5fbcf99cb8-wvccb   1/1     Running   0          103s
+^Cubuntu@secondaVM:~/LAB11_assignmentsudo k0s kubectl get svc rest-server-svcvc
+NAME              TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+rest-server-svc   NodePort   10.111.168.120   <none>        80:30080/TCP   21m
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS    RESTARTS   AGE
+rest-server-dep-5fbcf99cb8-wvccb   1/1     Running   0          2m6s
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://10.111.168.120/response/v1/resources
+curl: (7) Failed to connect to 10.111.168.120 port 80 after 0 ms: Couldn't connect to server
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get endpoints rest-server-svc
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME              ENDPOINTS          AGE
+rest-server-svc   10.244.0.19:5001   22m
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl logs rest-server-dep-5fbcf99cb8-wvccb
+Risorse caricate con successo da /etc/my_res.json
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.244.0.19:5000
+Press CTRL+C to quit
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-deployment.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-service.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-deployment.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml 
+sudo k0s kubectl apply -f my-service.yaml
+sudo k0s kubectl apply -f my-configmap.yaml
+deployment.apps/rest-server-dep configured
+service/rest-server-svc configured
+configmap/rest-server-config unchanged
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS              RESTARTS   AGE
+rest-server-dep-5fbcf99cb8-wvccb   1/1     Running             0          5m33s
+rest-server-dep-ddb6cd8ff-hcp45    0/1     ContainerCreating   0          13s
+^Cubuntu@secondaVM:~/LAB11_assignmentsudo k0s kubectl get pods
+NAME                               READY   STATUS              RESTARTS   AGE
+rest-server-dep-5fbcf99cb8-wvccb   1/1     Running             0          5m41s
+rest-server-dep-ddb6cd8ff-hcp45    0/1     ContainerCreating   0          21s
+ubuntu@secondaVM:~/LAB11_assignment$ ^C
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[{"id":"d3d59d41-c813-4b6c-a06a-11da38bd399e","name":"resource1","value":"Valore Alpha"},{"id":"045e9970-1d1c-4226-b104-9f5a04a0e218","name":"resource2","value":"Valore Beta"}]
+ubuntu@secondaVM:~/LAB11_assignment$ 

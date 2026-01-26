@@ -1,0 +1,251 @@
+ubuntu@secondaVM:~$ cd LAB11_assignment/
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml 
+sudo k0s kubectl apply -f my-service.yaml
+sudo k0s kubectl apply -f my-configmap.yaml
+error: error validating "my-deployment.yaml": error validating data: failed to download openapi: Get "https://localhost:6443/openapi/v2?timeout=32s": dial tcp [::1]:6443: connect: connection refused; if you choose to ignore these errors, turn validation off with --validate=false
+error: error validating "my-service.yaml": error validating data: failed to download openapi: Get "https://localhost:6443/openapi/v2?timeout=32s": dial tcp [::1]:6443: connect: connection refused; if you choose to ignore these errors, turn validation off with --validate=false
+error: error validating "my-configmap.yaml": error validating data: failed to download openapi: Get "https://localhost:6443/openapi/v2?timeout=32s": dial tcp [::1]:6443: connect: connection refused; if you choose to ignore these errors, turn validation off with --validate=false
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s status
+Error: status: can't get "status" via "/run/k0s/status.sock": Get "http://localhost/status": dial unix /run/k0s/status.sock: connect: no such file or directory
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s run
+Error: unknown command "run" for "k0s"
+Run 'k0s --help' for usage.
+ubuntu@secondaVM:~/LAB11_assignment$ curl -sSf https://get.k0s.sh | sudo sh
+Downloading k0s from URL: https://github.com/k0sproject/k0s/releases/download/v1.34.3+k0s.0/k0s-v1.34.3+k0s.0-arm64
+^C
+ubuntu@secondaVM:~/LAB11_assignment$ curl -sSf https://get.k0s.sh | sudo sh
+Downloading k0s from URL: https://github.com/k0sproject/k0s/releases/download/v1.34.3+k0s.0/k0s-v1.34.3+k0s.0-arm64
+^C
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s install controller --single 
+Segmentation fault
+ubuntu@secondaVM:~/LAB11_assignment$ curl -sSf https://get.k0s.sh | sudo sh
+Downloading k0s from URL: https://github.com/k0sproject/k0s/releases/download/v1.34.3+k0s.0/k0s-v1.34.3+k0s.0-arm64
+
+
+ kkk
+
+^C
+ubuntu@secondaVM:~/LAB11_assignment$ curl -sSf https://get.k0s.sh | sudo sh
+Downloading k0s from URL: https://github.com/k0sproject/k0s/releases/download/v1.34.3+k0s.0/k0s-v1.34.3+k0s.0-arm64
+
+
+k0s is now executable in /usr/local/bin
+You can use it to complete the installation of k0s on this node, 
+see https://docs.k0sproject.io/stable/install/ for more information.
+ubuntu@secondaVM:~/LAB11_assignment$ 
+ubuntu@secondaVM:~/LAB11_assignment$ 
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+The connection to the server localhost:6443 was refused - did you specify the right host or port?
+ubuntu@secondaVM:~/LAB11_assignment$ ls
+DockerFile  app.py  my-configmap.yaml  my-deployment.yaml  my-service.yaml
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml 
+sudo k0s kubectl apply -f my-service.yaml
+sudo k0s kubectl apply -f my-configmap.yaml
+error: error validating "my-deployment.yaml": error validating data: failed to download openapi: Get "https://localhost:6443/openapi/v2?timeout=32s": dial tcp [::1]:6443: connect: connection refused; if you choose to ignore these errors, turn validation off with --validate=false
+error: error validating "my-service.yaml": error validating data: failed to download openapi: Get "https://localhost:6443/openapi/v2?timeout=32s": dial tcp [::1]:6443: connect: connection refused; if you choose to ignore these errors, turn validation off with --validate=false
+error: error validating "my-configmap.yaml": error validating data: failed to download openapi: Get "https://localhost:6443/openapi/v2?timeout=32s": dial tcp [::1]:6443: connect: connection refused; if you choose to ignore these errors, turn validation off with --validate=false
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s install controller --single 
+Error: failed to install controller service: Init already exists: /etc/systemd/system/k0scontroller.service
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s start
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml 
+sudo k0s kubectl apply -f my-service.yaml
+sudo k0s kubectl apply -f my-configmap.yaml
+deployment.apps/rest-server-dep unchanged
+service/rest-server-svc unchanged
+configmap/rest-server-config unchanged
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS   RESTARTS   AGE
+rest-server-dep-7764d6f478-vcq5k   0/1     Error    5          71m
+ubuntu@secondaVM:~/LAB11_assignment$ ^C
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS   RESTARTS   AGE
+rest-server-dep-7764d6f478-vcq5k   0/1     Error    5          71m
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl rollout restart deployment rest-server-dep
+deployment.apps/rest-server-dep restarted
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS              RESTARTS   AGE
+rest-server-dep-68cb4ff4f4-wwt97   0/1     ContainerCreating   0          14s
+rest-server-dep-7764d6f478-vcq5k   0/1     Error               5          72m
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS              RESTARTS   AGE
+rest-server-dep-68cb4ff4f4-wwt97   0/1     ContainerCreating   0          36s
+rest-server-dep-7764d6f478-vcq5k   0/1     Error               5          72m
+\^Cubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS              RESTARTS   AGE
+rest-server-dep-68cb4ff4f4-wwt97   0/1     ContainerCreating   0          60s
+rest-server-dep-7764d6f478-vcq5k   0/1     Error               5          73m
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl logs rest-server-dep-7764d6f478-vcq5k 
+  File "/app/app.py", line 35
+    else:
+    ^
+SyntaxError: invalid syntax
+ubuntu@secondaVM:~/LAB11_assignment$ cd app
+-bash: cd: app: No such file or directory
+ubuntu@secondaVM:~/LAB11_assignment$ ls
+DockerFile  app.py  my-configmap.yaml  my-deployment.yaml  my-service.yaml
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS             RESTARTS      AGE
+rest-server-dep-68cb4ff4f4-wwt97   0/1     CrashLoopBackOff   2 (29s ago)   2m37s
+rest-server-dep-7764d6f478-vcq5k   0/1     CrashLoopBackOff   6 (49s ago)   74m
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl exec -it rest-server-dep-68cb4ff4f4-wwt97 -- /bin/bash
+error: Internal error occurred: unable to upgrade connection: container not found ("rest-server")
+ubuntu@secondaVM:~/LAB11_assignment$ nano DockerFile 
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl rollout restart deployment rest-server-dep
+deployment.apps/rest-server-dep restarted
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS             RESTARTS      AGE
+rest-server-dep-55465cd885-mw87j   0/1     Error              0             3s
+rest-server-dep-68cb4ff4f4-wwt97   0/1     CrashLoopBackOff   5 (59s ago)   8m15s
+ubuntu@secondaVM:~/LAB11_assignment$ ^C
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl logs rest-server-dep-68cb4ff4f4-wwt97 
+  File "/app/app.py", line 1
+    rom flask import Flask, jsonify
+        ^
+SyntaxError: invalid syntax
+ubuntu@secondaVM:~/LAB11_assignment$ nano app.py
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS             RESTARTS       AGE
+rest-server-dep-55465cd885-mw87j   0/1     CrashLoopBackOff   2 (22s ago)    45s
+rest-server-dep-68cb4ff4f4-wwt97   0/1     CrashLoopBackOff   5 (101s ago)   8m57s
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl rollout restart deployment rest-server-dep
+deployment.apps/rest-server-dep restarted
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS              RESTARTS      AGE
+rest-server-dep-55465cd885-mw87j   0/1     CrashLoopBackOff    2 (29s ago)   52s
+rest-server-dep-7b7f68ddcb-6szzl   0/1     ContainerCreating   0             2s
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS              RESTARTS      AGE
+rest-server-dep-55465cd885-mw87j   0/1     CrashLoopBackOff    2 (31s ago)   54s
+rest-server-dep-7b7f68ddcb-6szzl   0/1     ContainerCreating   0             4s
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS              RESTARTS      AGE
+rest-server-dep-55465cd885-mw87j   0/1     CrashLoopBackOff    2 (33s ago)   56s
+rest-server-dep-7b7f68ddcb-6szzl   0/1     ContainerCreating   0             6s
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS              RESTARTS      AGE
+rest-server-dep-55465cd885-mw87j   0/1     CrashLoopBackOff    2 (34s ago)   57s
+rest-server-dep-7b7f68ddcb-6szzl   0/1     ContainerCreating   0             7s
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS              RESTARTS      AGE
+rest-server-dep-55465cd885-mw87j   0/1     CrashLoopBackOff    2 (35s ago)   58s
+rest-server-dep-7b7f68ddcb-6szzl   0/1     ContainerCreating   0             8s
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods
+NAME                               READY   STATUS              RESTARTS      AGE
+rest-server-dep-55465cd885-mw87j   0/1     CrashLoopBackOff    2 (37s ago)   60s
+rest-server-dep-7b7f68ddcb-6szzl   0/1     ContainerCreating   0             10s
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS              RESTARTS      AGE
+rest-server-dep-55465cd885-mw87j   0/1     CrashLoopBackOff    2 (39s ago)   62s
+rest-server-dep-7b7f68ddcb-6szzl   0/1     ContainerCreating   0             12s
+rest-server-dep-7b7f68ddcb-6szzl   0/1     ErrImagePull        0             24s
+rest-server-dep-55465cd885-mw87j   0/1     ErrImagePull        2 (51s ago)   74s
+rest-server-dep-55465cd885-mw87j   0/1     Error               3 (59s ago)   82s
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl describe pod rest-server-dep-7b7f68ddcb-6szzlzl
+Name:             rest-server-dep-7b7f68ddcb-6szzl
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             secondavm/192.168.64.10
+Start Time:       Sun, 25 Jan 2026 23:03:51 +0100
+Labels:           app=rest-server
+                  pod-template-hash=7b7f68ddcb
+Annotations:      kubectl.kubernetes.io/restartedAt: 2026-01-25T23:03:50+01:00
+Status:           Running
+IP:               10.244.0.47
+IPs:
+  IP:           10.244.0.47
+Controlled By:  ReplicaSet/rest-server-dep-7b7f68ddcb
+Containers:
+  rest-server:
+    Container ID:   containerd://158d9d3abf16e5b8a1394d8564062f7e5b4faf0ef02f96e9727b07938e15c669
+    Image:          semplicementeria/rest-server:v1
+    Image ID:       docker.io/semplicementeria/rest-server@sha256:42f361de539a6b91c041bda28c8fc6b9d9776bd598a6ceba9d985a4dc864bc87
+    Port:           5000/TCP
+    Host Port:      0/TCP
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Sun, 25 Jan 2026 23:04:48 +0100
+      Finished:     Sun, 25 Jan 2026 23:04:48 +0100
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Sun, 25 Jan 2026 23:04:42 +0100
+      Finished:     Sun, 25 Jan 2026 23:04:42 +0100
+    Ready:          False
+    Restart Count:  1
+    Environment:    <none>
+    Mounts:
+      /etc/my_res.json from config-volume (rw,path="my_res.json")
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-9lcxn (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  config-volume:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      rest-server-config
+    Optional:  false
+  kube-api-access-9lcxn:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age                From               Message
+  ----     ------     ----               ----               -------
+  Normal   Scheduled  62s                default-scheduler  Successfully assigned default/rest-server-dep-7b7f68ddcb-6szzl to secondavm
+  Warning  Failed     40s                kubelet            Failed to pull image "semplicementeria/rest-server:v1": failed to pull and unpack image "docker.io/semplicementeria/rest-server:v1": failed to resolve reference "docker.io/semplicementeria/rest-server:v1": failed to do request: Head "https://registry-1.docker.io/v2/semplicementeria/rest-server/manifests/v1": net/http: TLS handshake timeout
+  Warning  Failed     40s                kubelet            Error: ErrImagePull
+  Normal   BackOff    39s                kubelet            Back-off pulling image "semplicementeria/rest-server:v1"
+  Warning  Failed     39s                kubelet            Error: ImagePullBackOff
+  Normal   Pulled     11s                kubelet            Successfully pulled image "semplicementeria/rest-server:v1" in 14.606s (14.607s including waiting). Image size: 80904652 bytes.
+  Normal   Pulling    10s (x3 over 62s)  kubelet            Pulling image "semplicementeria/rest-server:v1"
+  Normal   Created    5s (x2 over 11s)   kubelet            Created container: rest-server
+  Normal   Started    5s (x2 over 11s)   kubelet            Started container rest-server
+  Normal   Pulled     5s                 kubelet            Successfully pulled image "semplicementeria/rest-server:v1" in 5.035s (5.036s including waiting). Image size: 80904652 bytes.
+  Warning  BackOff    4s                 kubelet            Back-off restarting failed container rest-server in pod rest-server-dep-7b7f68ddcb-6szzl_default(b71b01c3-0147-4474-8608-f100e6160ef0)
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl logs rest-server-dep-7b7f68ddcb-6szzl
+  File "/app/app.py", line 1
+    rom flask import Flask, jsonify
+        ^
+SyntaxError: invalid syntax
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl rollout restart deployment rest-server-dep
+deployment.apps/rest-server-dep restarted
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS             RESTARTS      AGE
+rest-server-dep-7887747f6b-lsp7c   0/1     Error              0             4s
+rest-server-dep-7b7f68ddcb-6szzl   0/1     CrashLoopBackOff   3 (24s ago)   2m13s
+rest-server-dep-7887747f6b-lsp7c   0/1     Error              1 (2s ago)    5s
+rest-server-dep-7887747f6b-lsp7c   0/1     CrashLoopBackOff   1 (2s ago)    6s
+^Cubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS             RESTARTS      AGE
+rest-server-dep-7887747f6b-lsp7c   0/1     CrashLoopBackOff   1 (16s ago)   20s
+rest-server-dep-7b7f68ddcb-6szzl   0/1     CrashLoopBackOff   3 (40s ago)   2m29s
+rest-server-dep-7887747f6b-lsp7c   0/1     Error              2 (20s ago)   24s
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl logs rest-server-dep-7887747f6b-lsp7c 
+  File "/app/app.py", line 1
+    rom flask import Flask, jsonify
+        ^
+SyntaxError: invalid syntax
+ubuntu@secondaVM:~/LAB11_assignment$ nano my-deployment.yaml 
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl apply -f my-deployment.yaml
+deployment.apps/rest-server-dep configured
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl rollout restart deployment rest-server-dep
+deployment.apps/rest-server-dep restarted
+ubuntu@secondaVM:~/LAB11_assignment$ sudo k0s kubectl get pods -w
+NAME                               READY   STATUS              RESTARTS   AGE
+rest-server-dep-6f847c4469-d2298   1/1     Running             0          5m24s
+rest-server-dep-76558888f9-np5vb   0/1     ContainerCreating   0          8s
+ubuntu@secondaVM:~/LAB11_assignment$ curl http://localhost:30080/response/v1/resources
+[{"id":"4b315b3d-a965-4022-8e2c-bbb904ac81b6","name":"resource1","params":{"fixed":1},"value":"Valore Alpha"},{"id":"81261e5f-c84a-400a-a6da-1e70f5d95895","name":"resource2","params":{"fixed":1},"value":"Valore Beta"}]
+ubuntu@secondaVM:~/LAB11_assignment$ 
