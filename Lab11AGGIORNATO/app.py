@@ -1,51 +1,78 @@
-from flask import Flask, request, jsonify
-import time, uuid, random, json, os
-import numpy as np
+from flask import Flask, jsonify
+import json
+import os
+import uuid
 
 app = Flask(__name__)
 
-# Percorso del file montato dalla ConfigMap
+# The exact directory path from the text of the assignment
 CONFIG_PATH = "/etc/my_res.json"
 
-# Archivio globale per i generatori
+# Global list to store the resources loaded at boot
 generators = []
 
 def load_boot_resources():
-    """Carica le risorse dal file JSON all'avvio e le adatta al formato interno."""
+    """
+    Reads the JSON file at /etc/my_res.json.
+    Maps 'name' and 'value' from the ConfigMap into my internal list.
+    """
     if os.path.exists(CONFIG_PATH):
         try:
             with open(CONFIG_PATH, 'r') as f:
                 boot_data = json.load(f)
                 
-                # Se il JSON è una lista, lo processiamo
                 if isinstance(boot_data, list):
                     for res in boot_data:
-                        # Assicuriamoci che ogni risorsa abbia i campi necessari per funzionare
-                        # Se mancano (come nel tuo caso 'name'/'value'), mettiamo dei default
+                        # Constructing the resource object using the JSON keys
                         resource = {
-                            "id": res.get("id", str(uuid.uuid4())),
-                            "distr": res.get("distr", "deterministic"),
-                            "params": res.get("params", {"fixed": 1}),
-                            "task": res.get("task", "sleep"),
-                            "name_metadata": res.get("name", "Legacy Resource"),
-                            "value_metadata": res.get("value", "No value")
+                            "id": str(uuid.uuid4()),  # Generates a unique ID for internal use
+                            "name": res.get("name", "Unknown"),
+                            "value": res.get("value", "No Value Provided"),
+                            "params": {"fixed": 1} # Default wait time
                         }
                         generators.append(resource)
-                    print(f"[*] Caricate {len(generators)} risorse da {CONFIG_PATH}", flush=True)
+                    print(f"[*] Successfully loaded {len(generators)} resources.", flush=True)
                 else:
-                    print("[!] Errore: Il file JSON deve contenere una lista.", flush=True)
+                    print("[!] Error: JSON at /etc/my_res.json is not a list.", flush=True)
         except Exception as e:
-            print(f"[!] Errore durante la lettura del file JSON: {e}", flush=True)
+            print(f"[!] Error reading config file: {e}", flush=True)
     else:
-        print(f"[!] File {CONFIG_PATH} non trovato. Partenza con lista vuota.", flush=True)
+        print(f"[!] File {CONFIG_PATH} not found. Ensure ConfigMap is mounted.", flush=True)
 
-# Eseguiamo il caricamento prima che il server inizi a rispondere
+# Load the Alpha and Beta resources before starting the server
 load_boot_resources()
 
 @app.route("/")
 def welcome():
-    return "<h1>The random response time server is running!</h1>\n"
+    return "<h1>REST Server: Alpha & Beta Resources Loaded</h1>\n"
 
 @app.route('/response/v1/resources', methods=['GET'])
 def get_all_resources():
+    """Returns everything loaded from the ConfigMap."""
+    return jsonify(generators), 200
+
+@app.route('/response/v1/generate/<resource_name>', methods=['GET'])
+def get_resource_by_name(resource_name):
+    """
+    Allows to query a resource by name (e.g., /resource1).
+    """
+    # Find the resource where 'name' matches the URL parameter
+    res = next((g for g in generators if g["name"] == resource_name), None)
+    
+    if not res:
+        return jsonify({
+            "error": "Resource not found", 
+            "requested": resource_name,
+            "available": [g["name"] for g in generators]
+        }), 404
+    
+    return jsonify({
+        "status": "success",
+        "resource_name": res["name"],
+        "resource_value": res["value"]
+    })
+
+if __name__ == "__main__":
+    # Standard port 5000 as defined in the Service targetPort
+    app.run(host="0.0.0.0", port=5000)
 
