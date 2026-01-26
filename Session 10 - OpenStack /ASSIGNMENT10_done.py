@@ -1,21 +1,21 @@
 import requests
 import json
 
-# --- CONFIGURAZIONE DATI ---
-# Endpoint richiesto dall'assignment
+#DATA CONFIGURATION
+#(Requested endpoint from the assignment)
 BASE_URL = "http://10.15.2.1"
 AUTH_URL = f"{BASE_URL}:5000/v3/auth/tokens"
 
-# Inserisci qui i tuoi dati reali presi dalla Dashboard
+#Here I have to replace the information taken from the dashboard
 USERNAME = "dist-sys-user1"
 PASSWORD = "openstack4DistSys"
 PROJECT_ID = "f6af0003bfee4e32ae3ac2107e3a8eaa"
 
-# ID delle risorse (da trovare in Compute -> Images e Compute -> Flavors)
+#Resources' ID (find it in Compute -> Images and Compute -> Flavors)
 IMAGE_ID = "ee11a82a-1426-44b9-b11b-8b77e0bef276" 
 FLAVOR_ID = "2" # Solitamente 1 per m1.small
 
-# --- 1. AUTENTICAZIONE (KEYSTONE) ---
+#AUTHENTICATION (through Keyston)
 auth_data = {
     "auth": {
         "identity": {
@@ -34,24 +34,24 @@ auth_data = {
     }
 }
 
-print("Richiesta token di autenticazione...")
+print("Authentication token request...")
 response = requests.post(AUTH_URL, json=auth_data)
 
 if response.status_code != 201:
-    print(f"Errore Auth: {response.text}")
+    print(f"Error: {response.text}")
     exit()
 
 token = response.headers['X-Subject-Token']
 headers = {'X-Auth-Token': token, 'Content-Type': 'application/json'}
-print("Token ottenuto con successo.")
+print("Token obtained successsfully.")
 
-# --- 2. CREAZIONE NETWORK (NEUTRON) ---
+#NETWORK CREATION (through Neutron)
 net_payload = {"network": {"name": "rete_mariapia_auto"}}
 res_net = requests.post(f"{BASE_URL}:9696/v2.0/networks", headers=headers, json=net_payload).json()
 net_id = res_net['network']['id']
 print(f"Network creata con ID: {net_id}")
 
-# --- 3. CREAZIONE SUBNET (NEUTRON) - Necessaria per il boot ---
+#SUBNET CREATION (necessary part for the boot)
 subnet_payload = {
     "subnet": {
         "name": "subnet_mariapia_auto",
@@ -63,29 +63,29 @@ subnet_payload = {
 }
 res_sub = requests.post(f"{BASE_URL}:9696/v2.0/subnets", headers=headers, json=subnet_payload)
 if res_sub.status_code == 201:
-    print("Subnet creata con successo.")
+    print("Subnet created correctly.")
 else:
-    print(f"Errore Subnet: {res_sub.text}")
+    print(f"Subnet error: {res_sub.text}")
     exit()
 
-# --- 4. CREAZIONE VM (NOVA) ---
-# REQUISITO: adminPass deve essere il mio nome
+#VM CREATION (through Nova)
+#Requirement to fullfill from the assignment; the admin has to have my name
 server_payload = {
     "server": {
         "name": "vm_mariapia_auto",
         "imageRef": IMAGE_ID,
         "flavorRef": FLAVOR_ID,
-        "adminPass": "Mariapia", 
+        "adminPass": "Maria_Pia", 
         "networks": [{"uuid": net_id}],
         "security_groups": [{"name": "default"}]
     }
 }
 
-print("Creazione dell'istanza in corso...")
+print("Instance creating...")
 res_server = requests.post(f"{BASE_URL}:8774/v2.1/servers", headers=headers, json=server_payload)
 
 if res_server.status_code == 202:
-    print("Successo! L'istanza è stata accettata dal sistema.")
+    print("The instance has been accepted by the system.")
     print(json.dumps(res_server.json(), indent=2))
 else:
-    print(f"Errore Creazione VM: {res_server.text}")
+    print(f"Error in creating the VM: {res_server.text}")
