@@ -1,3 +1,4 @@
+#IL LAB è IL 10, L'ASSIGNMENT è L'8
 import requests
 import json
 
